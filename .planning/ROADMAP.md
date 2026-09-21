@@ -7,9 +7,9 @@ This roadmap takes the project from the raw problem statement and IO-VNBD datase
 ## Phases
 
 - [x] **Phase 1: Dataset Pipeline & Baseline INS Dead Reckoning** - Ingest IO-VNBD dataset, establish ground truth trajectory visualizer, and build baseline unassisted double-integration INS dead reckoning to measure raw drift.
-- [ ] **Phase 2: In-Vehicle Alignment & Signal Preprocessing** - Implement automatic gravity-based pitch/roll leveling, forward yaw axis alignment, Butterworth vibration filtering, and ZUPT/ZARU zero-velocity detectors.
-- [ ] **Phase 3: AI/ML Speed & Kinematic Estimation** - Build and train deep-learning models (1D CNN/GRU/TCN) to estimate vehicle forward speed from windowed IMU vibrations without OBD-II feeds, and export to ONNX.
-- [ ] **Phase 4: Non-Holonomic Constraints & Offline Map-Matching** - Implement Non-Holonomic Constraints (NHC) and an offline road-snapping / HMM map matcher using OpenStreetMap road link geometries.
+- [x] **Phase 2: In-Vehicle Alignment & Signal Preprocessing** - Implement automatic gravity-based pitch/roll leveling, forward yaw axis alignment, Butterworth vibration filtering, and ZUPT/ZARU zero-velocity detectors.
+- [x] **Phase 3: AI/ML Speed & Kinematic Estimation** - Build and train deep-learning models (1D CNN/GRU/TCN) to estimate vehicle forward speed from windowed IMU vibrations without OBD-II feeds, and export to ONNX.
+- [x] **Phase 4: Non-Holonomic Constraints & Offline Map-Matching** - Implement Non-Holonomic Constraints (NHC) and an offline road-snapping / HMM map matcher using OpenStreetMap road link geometries.
 - [ ] **Phase 5: GNSS+INS Fusion & Instant Blackout Handler** - Build Extended/Unscented Kalman Filter fusing GNSS + IMU with sub-50ms outage transition to AI-Dead Reckoning and smooth reconvergence upon GNSS recovery.
 - [ ] **Phase 6: High-Frequency Edge Core Engine** - Package the complete IDR-INS core into an edge-deployable modular engine supporting up to 200 Hz for high-grade/FOG external IMUs.
 - [ ] **Phase 7: Mobile Navigation Application** - Develop a cross-platform mobile navigation client (10 Hz) featuring offline map rendering, smooth vehicle tracking cursor, and real-time navigation status indicators.
@@ -65,8 +65,8 @@ This roadmap takes the project from the raw problem statement and IO-VNBD datase
 2. Offline road link parser loads OpenStreetMap (OSM) vector road geometries.
 3. Hidden Markov Model (HMM) or spatial projection snaps inertial trajectory onto valid road links.
 **Plans**: 2 plans
-- [ ] 04-01: Kinematic Non-Holonomic Constraints integration in trajectory update.
-- [ ] 04-02: Offline OSM road geometry parser and HMM map-matching filter.
+- [x] 04-01: Kinematic Non-Holonomic Constraints integration in trajectory update.
+- [x] 04-02: Offline OSM road geometry parser and HMM map-matching filter.
 
 ### Phase 5: GNSS+INS Fusion & Instant Blackout Handler
 **Goal**: Seamless state estimation fusing GNSS and IMU with instant transition to IDR during blackouts.  
@@ -127,7 +127,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 1. Dataset Pipeline & Baseline INS | 2/2 | ✅ Complete | 2026-09-10 |
 | 2. In-Vehicle Alignment & Preprocessing | 2/2 | ✅ Complete | 2026-09-10 |
 | 3. AI/ML Speed & Kinematic Estimation | 2/2 | ✅ Complete | 2026-09-10 |
-| 4. NHC & Offline Map-Matching | 0/2 | Not started | - |
+| 4. NHC & Offline Map-Matching | 2/2 | ✅ Complete | 2026-09-21 |
 | 5. GNSS+INS Fusion & Blackout Handler | 0/2 | Not started | - |
 | 6. Edge Core Engine | 0/1 | Not started | - |
 | 7. Mobile Navigation Application | 0/2 | Not started | - |

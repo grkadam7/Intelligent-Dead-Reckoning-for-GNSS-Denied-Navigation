@@ -67,10 +67,10 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | EVAL-01, EVAL-02 | Phase 1 | Completed |
-| ALIGN-01, ALIGN-02, ALIGN-03 | Phase 2 | Pending |
-| FILTER-01, FILTER-02 | Phase 2 | Pending |
-| SPEED-01, SPEED-02, SPEED-03 | Phase 3 | Pending |
-| MAP-01, MAP-02, MAP-03 | Phase 4 | Pending |
+| ALIGN-01, ALIGN-02, ALIGN-03 | Phase 2 | Completed |
+| FILTER-01, FILTER-02 | Phase 2 | Completed |
+| SPEED-01, SPEED-02, SPEED-03 | Phase 3 | Completed |
+| MAP-01, MAP-02, MAP-03 | Phase 4 | Completed |
 | FUSION-01, FUSION-02, FUSION-03, FUSION-04 | Phase 5 | Pending |
 | EDGE-01, EDGE-02 | Phase 6 | Pending |
 | MOBILE-01, MOBILE-02, MOBILE-03 | Phase 7 | Pending |
