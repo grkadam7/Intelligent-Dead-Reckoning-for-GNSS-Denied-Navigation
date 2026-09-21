@@ -3,10 +3,10 @@ gsd_state_version: '1.0'
 status: ready_to_plan
 progress:
   total_phases: 8
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 14
-  completed_plans: 8
-  percent: 57
+  completed_plans: 10
+  percent: 71
 ---
 
 # Project State
@@ -16,23 +16,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-21)
 
 **Core value:** Restrict positional drift to <10% of total distance during GNSS outages using low-cost smartphone MEMS IMUs without OBD-II feeds, ensuring uninterrupted lane-level navigation.  
-**Current focus:** Phase 5: GNSS+INS Fusion & Blackout Handler
+**Current focus:** Phase 6: Edge Core Engine
 
 ## Current Position
 
-Phase: 5 of 8 (GNSS+INS Fusion & Blackout Handler)  
-Plan: 0 of 2 in current phase  
+Phase: 6 of 8 (Edge Core Engine)  
+Plan: 0 of 1 in current phase  
 Status: Ready to plan  
-Last activity: 2026-09-21 — Completed Phase 4 (Non-Holonomic Constraints & Offline Map-Matching). Built NHC dead reckoning engine, offline vector road network parser with spatial hash grid & Dijkstra routing, and Newson-Krumm HMM map matcher with Viterbi decoding. 43/43 tests green. Drift suppressed to 0.59% (NHC) and 0.00% (Map-Matched), easily satisfying the SIH <10% benchmark.
+Last activity: 2026-09-21 — Completed Phase 5 (GNSS+INS EKF Fusion & Blackout Handler). Built 9-state EKF with NHC virtual measurements, sub-50ms GNSS outage detector, exponential smooth reconvergence filter, and master GNSSINSFusionEngine. 51/51 tests green. Drift <1.15% across 10s/20s/30s tunnel blackout scenarios (SIH target <10%). Detection latency 0.1ms (target <50ms).
 
-Progress: [████████████░░░░░░░░] 57%
+Progress: [████████████████░░░░] 71%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 10
 - Average duration: ~15 min
-- Total execution time: ~2.0 hours
+- Total execution time: ~2.5 hours
 
 **By Phase:**
 
@@ -42,13 +42,13 @@ Progress: [████████████░░░░░░░░] 57%
 | 2. In-Vehicle Alignment & Preprocessing | 2/2 | Completed | 10 min |
 | 3. AI/ML Speed & Kinematic Estimation | 2/2 | Completed | 12 min |
 | 4. NHC & Offline Map-Matching | 2/2 | Completed | 15 min |
-| 5. GNSS+INS Fusion & Blackout Handler | 0/2 | - | - |
+| 5. GNSS+INS Fusion & Blackout Handler | 2/2 | Completed | 15 min |
 | 6. Edge Core Engine | 0/1 | - | - |
 | 7. Mobile Navigation Application | 0/2 | - | - |
 | 8. SIH Benchmark Deliverables | 0/1 | - | - |
 
 **Recent Trend:**
-- Trend: Consistent high velocity across Phases 1-4.
+- Trend: Consistent high velocity across Phases 1-5.
 
 *Updated after each plan completion*
 
@@ -58,9 +58,10 @@ Progress: [████████████░░░░░░░░] 57%
 Decisions are logged in PROJECT.md Key Decisions table.
 - [Project Bootstrap]: Adopted hybrid architecture (desktop/cloud training with ONNX mobile inference), coordinate frame leveling via gravity vector, and Non-Holonomic Constraints (NHC) to suppress perpendicular drift.
 - [Phase 4]: Adopted Newson & Krumm (2009) HMM formulation with Gaussian emission probability + heading consistency and exponential transition probability on Dijkstra shortest network paths. Implemented 2D spatial hash grid indexing for O(1) candidate segment queries.
+- [Phase 5]: 9-state EKF (pos/vel/heading/gyro-bias/accel-bias) with Joseph-form covariance update. GNSS health monitor uses 3-gate test (fix interval, accuracy degradation, Mahalanobis chi-sq outlier). Smooth reconvergence uses exponential decay offset with configurable half-life to eliminate tunnel-exit position jumps.
 
 ### Pending Todos
-None yet.
+None.
 
 ### Blockers/Concerns
 None.
@@ -69,6 +70,6 @@ None.
 None.
 
 ## Session Continuity
-Last session: 2026-09-21 18:11 IST  
-Stopped at: Completed Phase 4 execution and verification. Ready for Phase 5 (GNSS+INS Kalman Fusion & Instant Blackout Handler) planning.  
+Last session: 2026-09-21 18:45 IST  
+Stopped at: Completed Phase 5 execution and verification. Ready for Phase 6 (Edge Core Engine — ONNX packaging, C-extension interface, real-time pipeline runner).  
 Resume file: None  
