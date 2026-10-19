@@ -10,7 +10,7 @@ This roadmap takes the project from the raw problem statement and IO-VNBD datase
 - [x] **Phase 2: In-Vehicle Alignment & Signal Preprocessing** - Implement automatic gravity-based pitch/roll leveling, forward yaw axis alignment, Butterworth vibration filtering, and ZUPT/ZARU zero-velocity detectors.
 - [x] **Phase 3: AI/ML Speed & Kinematic Estimation** - Build and train deep-learning models (1D CNN/GRU/TCN) to estimate vehicle forward speed from windowed IMU vibrations without OBD-II feeds, and export to ONNX.
 - [x] **Phase 4: Non-Holonomic Constraints & Offline Map-Matching** - Implement Non-Holonomic Constraints (NHC) and an offline road-snapping / HMM map matcher using OpenStreetMap road link geometries.
-- [ ] **Phase 5: GNSS+INS Fusion & Instant Blackout Handler** - Build Extended/Unscented Kalman Filter fusing GNSS + IMU with sub-50ms outage transition to AI-Dead Reckoning and smooth reconvergence upon GNSS recovery.
+- [x] **Phase 5: GNSS+INS Fusion & Instant Blackout Handler** - Build Extended/Unscented Kalman Filter fusing GNSS + IMU with sub-50ms outage transition to AI-Dead Reckoning and smooth reconvergence upon GNSS recovery.
 - [ ] **Phase 6: High-Frequency Edge Core Engine** - Package the complete IDR-INS core into an edge-deployable modular engine supporting up to 200 Hz for high-grade/FOG external IMUs.
 - [ ] **Phase 7: Mobile Navigation Application** - Develop a cross-platform mobile navigation client (10 Hz) featuring offline map rendering, smooth vehicle tracking cursor, and real-time navigation status indicators.
 - [ ] **Phase 8: SIH Benchmark Deliverables** - Generate quantitative benchmark metrics, trajectory plots (Ground Truth vs Raw vs IDR), and proposal artifacts demonstrating $<10\%$ drift for SIH screening.
@@ -78,8 +78,8 @@ This roadmap takes the project from the raw problem statement and IO-VNBD datase
 3. Positional drift maintained $< 10\%$ of distance traveled in simulated GNSS outage segments ($< 5$ m over 50 m; $< 100$ m over 1 km).
 4. Smooth reconvergence back to GNSS fix without position discontinuities.
 **Plans**: 2 plans
-- [ ] 05-01: EKF sensor fusion engine for combined GNSS+INS navigation state.
-- [ ] 05-02: Outage detector, seamless state switcher, and smooth reconvergence filter.
+- [x] 05-01: EKF sensor fusion engine for combined GNSS+INS navigation state.
+- [x] 05-02: Outage detector, seamless state switcher, and smooth reconvergence filter.
 
 ### Phase 6: High-Frequency Edge Core Engine
 **Goal**: Modularize the complete IDR-INS core engine for standalone deployment on edge hardware up to 200 Hz.  
@@ -128,7 +128,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 2. In-Vehicle Alignment & Preprocessing | 2/2 | ✅ Complete | 2026-09-10 |
 | 3. AI/ML Speed & Kinematic Estimation | 2/2 | ✅ Complete | 2026-09-10 |
 | 4. NHC & Offline Map-Matching | 2/2 | ✅ Complete | 2026-09-21 |
-| 5. GNSS+INS Fusion & Blackout Handler | 0/2 | Not started | - |
-| 6. Edge Core Engine | 0/1 | Not started | - |
+| 5. GNSS+INS Fusion & Blackout Handler | 2/2 | ✅ Complete | 2026-09-21 |
+| 6. Edge Core Engine | 0/1 | ⏳ Ready to execute | - |
 | 7. Mobile Navigation Application | 0/2 | Not started | - |
 | 8. SIH Benchmark Deliverables | 0/1 | Not started | - |

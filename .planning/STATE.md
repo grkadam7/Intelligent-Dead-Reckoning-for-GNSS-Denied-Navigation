@@ -1,6 +1,6 @@
 ---
 gsd_state_version: '1.0'
-status: ready_to_plan
+status: ready_to_execute
 progress:
   total_phases: 8
   completed_phases: 5
@@ -21,9 +21,9 @@ See: .planning/PROJECT.md (updated 2026-09-21)
 ## Current Position
 
 Phase: 6 of 8 (Edge Core Engine)  
-Plan: 0 of 1 in current phase  
-Status: Ready to plan  
-Last activity: 2026-09-21 — Completed Phase 5 (GNSS+INS EKF Fusion & Blackout Handler). Built 9-state EKF with NHC virtual measurements, sub-50ms GNSS outage detector, exponential smooth reconvergence filter, and master GNSSINSFusionEngine. 51/51 tests green. Drift <1.15% across 10s/20s/30s tunnel blackout scenarios (SIH target <10%). Detection latency 0.1ms (target <50ms).
+Plan: 1 of 1 in current phase (06-01-PLAN.md)  
+Status: Ready to execute  
+Last activity: Planned Phase 6 Plan 01: Standalone High-Frequency Edge Core Engine & 200 Hz Streaming Benchmark.  
 
 Progress: [████████████████░░░░] 71%
 
