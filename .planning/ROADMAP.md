@@ -101,7 +101,7 @@ This roadmap takes the project from the raw problem statement and IO-VNBD datase
 2. Real-time visual status chips: "GNSS Active", "GNSS Outage (Dead Reckoning)", and calibration indicator.
 3. Tested on-device or simulated mobile environment.
 **Plans**: 2 plans
-- [ ] 07-01: Mobile UI framework setup and offline vector map rendering.
+- [x] 07-01: Mobile UI framework setup and offline vector map rendering.
 - [ ] 07-02: On-device sensor stream integration, ONNX inference integration, and navigation HUD.
 
 ### Phase 8: SIH Benchmark Evaluation & Screening Deliverables
@@ -130,5 +130,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 4. NHC & Offline Map-Matching | 2/2 | ✅ Complete | 2026-09-21 |
 | 5. GNSS+INS Fusion & Blackout Handler | 2/2 | ✅ Complete | 2026-09-21 |
 | 6. Edge Core Engine | 1/1 | ✅ Complete | 2026-10-22 |
-| 7. Mobile Navigation Application | 0/2 | Not started | - |
+| 7. Mobile Navigation Application | 1/2 | In progress | - |
 | 8. SIH Benchmark Deliverables | 0/1 | Not started | - |

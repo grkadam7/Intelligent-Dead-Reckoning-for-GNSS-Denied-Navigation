@@ -1,0 +1,45 @@
+{
+  "package_id": "coventry_urban_transit_v1",
+  "title": "Coventry Urban Transit Corridor & Test Grid",
+  "version": "1.0.0",
+  "schema_version": "1.0",
+  "crs": "EPSG:4326",
+  "center": [
+    -1.50529,
+    52.40166
+  ],
+  "bounds": [
+    -1.50729,
+    52.39966,
+    -1.498691,
+    52.407081
+  ],
+  "zoom_levels": {
+    "min_zoom": 12,
+    "max_zoom": 18,
+    "default_zoom": 15
+  },
+  "license": {
+    "type": "CC-BY-4.0",
+    "attribution": "ISRO SIH 26168 Synthetic Evaluation Benchmark / OpenStreetMap Contributors",
+    "commercial_use_allowed": true,
+    "redistribution_allowed": true
+  },
+  "files": {
+    "road_network": {
+      "path": "urban_route.geojson",
+      "format": "geojson",
+      "size_bytes": 55410,
+      "sha256": "75209babc2962e32caeb8dc765a61cc46da63f4ce99bdf86e2274008d7490c29"
+    },
+    "replay_stream": {
+      "path": "../replay/navigation.json",
+      "format": "json_snapshots",
+      "sample_rate_hz": 10.0,
+      "duration_seconds": 60.0,
+      "num_snapshots": 600,
+      "size_bytes": 477775,
+      "sha256": "9f84d567b58059aff1ea53f78046404759f9007f56609b6930979f3adb897a71"
+    }
+  }
+}
