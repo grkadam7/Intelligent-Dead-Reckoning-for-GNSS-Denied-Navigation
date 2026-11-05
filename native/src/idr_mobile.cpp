@@ -225,3 +225,4 @@ int32_t idr_mobile_reset(idr_mobile_handle_t handle) {
 
     return IDR_SUCCESS;
 }
+

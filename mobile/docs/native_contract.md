@@ -94,3 +94,4 @@ When comparing the compiled native engine against the reviewed Python oracle:
 - EKF velocity state $(v_e, v_n)$: Absolute tolerance $\le 1 \times 10^{-4}$ m/s.
 - Covariance matrix elements: Relative tolerance $\le 1 \times 10^{-4}$.
 - Mode transitions and state flags: Exact match (`gnss_aided` $\leftrightarrow$ `dead_reckoning` $\leftrightarrow$ `recovering`).
+

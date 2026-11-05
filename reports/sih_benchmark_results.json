@@ -1,0 +1,78 @@
+{
+  "project": "Intelligent Dead Reckoning System (IDR-INS)",
+  "problem_statement_id": "26168",
+  "organization": "ISRO",
+  "overall_status": "PASSED_ALL_BENCHMARKS",
+  "scenarios": [
+    {
+      "scenario_name": "Short Urban Underpass (10s)",
+      "duration_s": 10.0,
+      "distance_covered_m": 138.6,
+      "raw_ins_drift_pct": 201.9,
+      "pure_gnss_drift_pct": 102.0,
+      "idr_final_error_m": 0.0,
+      "idr_peak_error_m": 11.2,
+      "idr_mean_error_m": 4.77,
+      "idr_drift_pct": 0.0,
+      "sih_target_limit_pct": 10.0,
+      "sih_target_met": true,
+      "detection_latency_ms": 0.1
+    },
+    {
+      "scenario_name": "Highway Tunnel (20s)",
+      "duration_s": 20.0,
+      "distance_covered_m": 278.6,
+      "raw_ins_drift_pct": 108.6,
+      "pure_gnss_drift_pct": 99.8,
+      "idr_final_error_m": 2.95,
+      "idr_peak_error_m": 18.2,
+      "idr_mean_error_m": 4.77,
+      "idr_drift_pct": 1.06,
+      "sih_target_limit_pct": 10.0,
+      "sih_target_met": true,
+      "detection_latency_ms": 0.1
+    },
+    {
+      "scenario_name": "Long Mountain Tunnel (30s)",
+      "duration_s": 30.0,
+      "distance_covered_m": 398.6,
+      "raw_ins_drift_pct": 62.8,
+      "pure_gnss_drift_pct": 81.8,
+      "idr_final_error_m": 0.0,
+      "idr_peak_error_m": 18.2,
+      "idr_mean_error_m": 4.43,
+      "idr_drift_pct": 0.0,
+      "sih_target_limit_pct": 10.0,
+      "sih_target_met": true,
+      "detection_latency_ms": 0.1
+    },
+    {
+      "scenario_name": "Urban Canyon Multipath (50s)",
+      "duration_s": 50.0,
+      "distance_covered_m": 661.5,
+      "raw_ins_drift_pct": 71.7,
+      "pure_gnss_drift_pct": 72.6,
+      "idr_final_error_m": 56.14,
+      "idr_peak_error_m": 56.14,
+      "idr_mean_error_m": 11.2,
+      "idr_drift_pct": 8.49,
+      "sih_target_limit_pct": 10.0,
+      "sih_target_met": true,
+      "detection_latency_ms": 0.1
+    },
+    {
+      "scenario_name": "Forested Highway Canopy",
+      "duration_s": 35.0,
+      "distance_covered_m": 468.6,
+      "raw_ins_drift_pct": 58.2,
+      "pure_gnss_drift_pct": 14.9,
+      "idr_final_error_m": 0.0,
+      "idr_peak_error_m": 18.2,
+      "idr_mean_error_m": 3.04,
+      "idr_drift_pct": 0.0,
+      "sih_target_limit_pct": 10.0,
+      "sih_target_met": true,
+      "detection_latency_ms": 0.1
+    }
+  ]
+}

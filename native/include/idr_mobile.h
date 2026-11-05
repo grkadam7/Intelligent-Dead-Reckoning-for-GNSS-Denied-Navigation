@@ -154,3 +154,4 @@ int32_t idr_mobile_reset(idr_mobile_handle_t handle);
 #endif
 
 #endif /* IDR_MOBILE_H */
+

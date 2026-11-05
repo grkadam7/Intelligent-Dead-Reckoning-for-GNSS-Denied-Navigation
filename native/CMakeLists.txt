@@ -24,3 +24,4 @@ if (BUILD_TESTING)
     target_link_libraries(test_abi PRIVATE idr_mobile)
     add_test(NAME abi_tests COMMAND test_abi)
 endif()
+

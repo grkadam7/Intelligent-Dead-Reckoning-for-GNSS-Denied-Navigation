@@ -33,3 +33,4 @@
    - `test_phase7_assets.py` (1 test): Offline map manifest, checksums, GeoJSON road network, and replay stream.
    - `test_phase7_reference.py` (2 tests): Reference oracle structure, model manifest parameters, and mode transitions.
    - `test_mobile_abi_ctypes.py` (3 tests): 64-bit struct layouts, byte offsets, and padding verification.
+
