@@ -87,15 +87,24 @@ class GNSSHealthMonitor:
         """
         start_eval_time = timestamp_s
 
-        if self.last_valid_fix_timestamp is None and gnss_pos_enu is not None:
+        # If a fresh GNSS fix is present, treat it as the latest valid fix
+        # for interval computation — prevents stale-interval false-positive
+        # after a legitimate outage recovery.
+        if gnss_pos_enu is not None and not explicit_outage_flag:
+            if self.last_valid_fix_timestamp is None:
+                self.last_valid_fix_timestamp = timestamp_s
+                self.last_valid_position = np.asarray(gnss_pos_enu).copy()
+            # Compute interval BEFORE updating, so we still have history,
+            # then update timestamp so the interval check sees the fresh fix.
+            time_since_fix = timestamp_s - self.last_valid_fix_timestamp
             self.last_valid_fix_timestamp = timestamp_s
             self.last_valid_position = np.asarray(gnss_pos_enu).copy()
-
-        time_since_fix = (
-            timestamp_s - self.last_valid_fix_timestamp
-            if self.last_valid_fix_timestamp is not None
-            else 999.0
-        )
+        else:
+            time_since_fix = (
+                timestamp_s - self.last_valid_fix_timestamp
+                if self.last_valid_fix_timestamp is not None
+                else 999.0
+            )
 
         is_outage = False
         reason = "Normal Signal"
@@ -105,8 +114,8 @@ class GNSSHealthMonitor:
             is_outage = True
             reason = "GNSS Fix Missing / Signal Loss"
 
-        # Check 2: Stagnant fix interval
-        elif time_since_fix > self.max_fix_interval:
+        # Check 2: Stagnant fix interval (only relevant when no fresh fix present)
+        elif gnss_pos_enu is None and time_since_fix > self.max_fix_interval:
             is_outage = True
             reason = f"Fix Interval Stagnant ({time_since_fix:.2f} s > {self.max_fix_interval:.2f} s)"
 
