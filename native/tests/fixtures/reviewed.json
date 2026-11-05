@@ -1,0 +1,941 @@
+{
+  "metadata": {
+    "generator": "tools/phase7/export_reference.py",
+    "schema_version": "1.0.0",
+    "origin_geodetic": [
+      52.40166,
+      -1.50529,
+      147.5
+    ],
+    "num_epochs": 20,
+    "dt_sec": 0.1
+  },
+  "tolerances": {
+    "position_enu_m": 0.0001,
+    "velocity_enu_mps": 0.0001,
+    "heading_deg": 0.05,
+    "detection_latency_ms": 1.0
+  },
+  "epochs": [
+    {
+      "epoch_index": 0,
+      "timestamp_s": 0.0,
+      "input": {
+        "accel_raw": [
+          0.069765,
+          1.447631,
+          9.820678
+        ],
+        "gyro_raw": [
+          0.000221,
+          0.011829,
+          0.002967
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          0.0003,
+          0.0
+        ],
+        "ekf_velocity": [
+          0.0,
+          0.007,
+          0.0
+        ],
+        "heading_deg": 0.02
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          0.0003,
+          0.0
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 1,
+      "timestamp_s": 0.1053,
+      "input": {
+        "accel_raw": [
+          0.084645,
+          1.437772,
+          9.885101
+        ],
+        "gyro_raw": [
+          0.009232,
+          0.007036,
+          -0.010481
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.0147,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          -0.0019,
+          0.0005,
+          0.0
+        ],
+        "ekf_velocity": [
+          -0.017,
+          0.0095,
+          0.0
+        ],
+        "heading_deg": 359.95
+      },
+      "output": {
+        "position_enu": [
+          -0.0019,
+          0.0005,
+          0.0
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 2,
+      "timestamp_s": 0.2105,
+      "input": {
+        "accel_raw": [
+          0.09375,
+          1.43513,
+          9.914296
+        ],
+        "gyro_raw": [
+          0.007432,
+          -0.008008,
+          -0.005859
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.0442,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0014,
+          0.0082,
+          0.0398
+        ],
+        "ekf_velocity": [
+          0.0093,
+          0.0147,
+          0.0
+        ],
+        "heading_deg": 359.94
+      },
+      "output": {
+        "position_enu": [
+          0.0014,
+          0.0082,
+          0.0398
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 3,
+      "timestamp_s": 0.3158,
+      "input": {
+        "accel_raw": [
+          0.163451,
+          1.401756,
+          9.819663
+        ],
+        "gyro_raw": [
+          0.005385,
+          0.018245,
+          -0.009106
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.0884,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0058,
+          0.0214,
+          0.0568
+        ],
+        "ekf_velocity": [
+          0.0295,
+          0.0268,
+          0.0
+        ],
+        "heading_deg": 359.94
+      },
+      "output": {
+        "position_enu": [
+          0.0058,
+          0.0214,
+          0.0568
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 4,
+      "timestamp_s": 0.4211,
+      "input": {
+        "accel_raw": [
+          0.051146,
+          1.42989,
+          9.861781
+        ],
+        "gyro_raw": [
+          0.005619,
+          0.002005,
+          0.002719
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.1474,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0191,
+          0.0391,
+          0.0663
+        ],
+        "ekf_velocity": [
+          0.0819,
+          0.0248,
+          0.0
+        ],
+        "heading_deg": 0.28
+      },
+      "output": {
+        "position_enu": [
+          0.0191,
+          0.0391,
+          0.0663
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 5,
+      "timestamp_s": 0.5263,
+      "input": {
+        "accel_raw": [
+          0.044323,
+          1.382127,
+          9.728138
+        ],
+        "gyro_raw": [
+          -0.006304,
+          -0.002304,
+          -0.001199
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.2211,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0338,
+          0.0618,
+          0.0723
+        ],
+        "ekf_velocity": [
+          0.1229,
+          0.0238,
+          0.0
+        ],
+        "heading_deg": 0.62
+      },
+      "output": {
+        "position_enu": [
+          0.0338,
+          0.0618,
+          0.0723
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 6,
+      "timestamp_s": 0.6316,
+      "input": {
+        "accel_raw": [
+          0.016703,
+          1.429676,
+          9.793474
+        ],
+        "gyro_raw": [
+          0.004664,
+          -0.009797,
+          -0.004998
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.3095,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0516,
+          0.0894,
+          0.0765
+        ],
+        "ekf_velocity": [
+          0.1639,
+          0.0213,
+          0.0
+        ],
+        "heading_deg": 0.98
+      },
+      "output": {
+        "position_enu": [
+          0.0516,
+          0.0894,
+          0.0765
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 7,
+      "timestamp_s": 0.7368,
+      "input": {
+        "accel_raw": [
+          0.0029,
+          1.375147,
+          9.781298
+        ],
+        "gyro_raw": [
+          0.004432,
+          0.00389,
+          -0.007769
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.4126,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0675,
+          0.122,
+          0.0796
+        ],
+        "ekf_velocity": [
+          0.1858,
+          0.0188,
+          0.0
+        ],
+        "heading_deg": 1.24
+      },
+      "output": {
+        "position_enu": [
+          0.0675,
+          0.122,
+          0.0796
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 8,
+      "timestamp_s": 0.8421,
+      "input": {
+        "accel_raw": [
+          0.096564,
+          1.491171,
+          9.850144
+        ],
+        "gyro_raw": [
+          0.004233,
+          0.001941,
+          0.001024
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.5305,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0873,
+          0.1602,
+          0.082
+        ],
+        "ekf_velocity": [
+          0.217,
+          0.0276,
+          0.0
+        ],
+        "heading_deg": 1.6
+      },
+      "output": {
+        "position_enu": [
+          0.0873,
+          0.1602,
+          0.082
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 9,
+      "timestamp_s": 0.9474,
+      "input": {
+        "accel_raw": [
+          0.14636,
+          1.377721,
+          9.769195
+        ],
+        "gyro_raw": [
+          0.003111,
+          0.005792,
+          -0.007303
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          0.6632,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.1111,
+          0.2042,
+          0.0838
+        ],
+        "ekf_velocity": [
+          0.2544,
+          0.0412,
+          0.0
+        ],
+        "heading_deg": 2.13
+      },
+      "output": {
+        "position_enu": [
+          0.1111,
+          0.2042,
+          0.0838
+        ],
+        "navigation_mode": "NORMAL_FUSION",
+        "is_outage": false,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 10,
+      "timestamp_s": 1.0526,
+      "input": {
+        "accel_raw": [
+          0.123129,
+          1.423183,
+          9.84915
+        ],
+        "gyro_raw": [
+          0.006351,
+          0.006265,
+          -0.008779
+        ],
+        "gnss_pos_enu": null,
+        "gnss_accuracy_m": 999.0,
+        "is_outage": true
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          0.3939,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.0741,
+          1.3983,
+          0.0
+        ],
+        "heading_deg": 3.03
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          0.3939,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.0,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 11,
+      "timestamp_s": 1.1579,
+      "input": {
+        "accel_raw": [
+          0.078825,
+          1.308473,
+          9.814027
+        ],
+        "gyro_raw": [
+          -0.003092,
+          -0.004663,
+          0.001373
+        ],
+        "gnss_pos_enu": null,
+        "gnss_accuracy_m": 999.0,
+        "is_outage": true
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          0.5485,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.0854,
+          1.5458,
+          0.0
+        ],
+        "heading_deg": 3.16
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          0.5485,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.105,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 12,
+      "timestamp_s": 1.2632,
+      "input": {
+        "accel_raw": [
+          0.116182,
+          1.458184,
+          9.896727
+        ],
+        "gyro_raw": [
+          0.000485,
+          -0.001111,
+          -0.008606
+        ],
+        "gnss_pos_enu": null,
+        "gnss_accuracy_m": 999.0,
+        "is_outage": true
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          0.7335,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.1034,
+          1.8494,
+          0.0
+        ],
+        "heading_deg": 3.2
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          0.7335,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.211,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 13,
+      "timestamp_s": 1.3684,
+      "input": {
+        "accel_raw": [
+          0.043689,
+          1.434829,
+          9.849216
+        ],
+        "gyro_raw": [
+          -0.002789,
+          0.006084,
+          -0.001832
+        ],
+        "gnss_pos_enu": null,
+        "gnss_accuracy_m": 999.0,
+        "is_outage": true
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          0.9274,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.1103,
+          1.9393,
+          0.0
+        ],
+        "heading_deg": 3.25
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          0.9274,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.316,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 14,
+      "timestamp_s": 1.4737,
+      "input": {
+        "accel_raw": [
+          0.130537,
+          1.514928,
+          9.796774
+        ],
+        "gyro_raw": [
+          0.007253,
+          0.001342,
+          0.000562
+        ],
+        "gnss_pos_enu": null,
+        "gnss_accuracy_m": 999.0,
+        "is_outage": true
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          1.1406,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.123,
+          2.1317,
+          0.0
+        ],
+        "heading_deg": 3.3
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          1.1406,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.421,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 15,
+      "timestamp_s": 1.5789,
+      "input": {
+        "accel_raw": [
+          0.089411,
+          1.532157,
+          9.840904
+        ],
+        "gyro_raw": [
+          0.013018,
+          0.002148,
+          -2.4e-05
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          1.7684,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          1.3703,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.1337,
+          2.2977,
+          0.0
+        ],
+        "heading_deg": 3.33
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          1.3703,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.526,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 16,
+      "timestamp_s": 1.6842,
+      "input": {
+        "accel_raw": [
+          0.085905,
+          1.386258,
+          9.875898
+        ],
+        "gyro_raw": [
+          0.003763,
+          -0.005828,
+          -0.006813
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          2.0042,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          1.5938,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.3076,
+          2.2347,
+          0.0
+        ],
+        "heading_deg": 7.84
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          1.5938,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.632,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 17,
+      "timestamp_s": 1.7895,
+      "input": {
+        "accel_raw": [
+          0.078367,
+          1.377234,
+          9.822521
+        ],
+        "gyro_raw": [
+          0.002819,
+          0.007477,
+          0.000905
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          2.2547,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          1.8245,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.5173,
+          2.3066,
+          0.0
+        ],
+        "heading_deg": 12.64
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          1.8245,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.737,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 18,
+      "timestamp_s": 1.8947,
+      "input": {
+        "accel_raw": [
+          0.050526,
+          1.502769,
+          9.820213
+        ],
+        "gyro_raw": [
+          0.005285,
+          0.00665,
+          -0.011846
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          2.52,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          2.0875,
+          0.0853
+        ],
+        "ekf_velocity": [
+          0.907,
+          2.6303,
+          0.0
+        ],
+        "heading_deg": 19.03
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          2.0875,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.842,
+        "detection_latency_ms": 0.1
+      }
+    },
+    {
+      "epoch_index": 19,
+      "timestamp_s": 2.0,
+      "input": {
+        "accel_raw": [
+          0.028876,
+          1.403543,
+          9.857674
+        ],
+        "gyro_raw": [
+          0.002033,
+          0.005346,
+          -0.012245
+        ],
+        "gnss_pos_enu": [
+          0.0,
+          2.8,
+          0.0993
+        ],
+        "gnss_accuracy_m": 2.5,
+        "is_outage": false
+      },
+      "intermediate": {
+        "ekf_position": [
+          0.0,
+          2.3344,
+          0.0853
+        ],
+        "ekf_velocity": [
+          1.3727,
+          2.4693,
+          0.0
+        ],
+        "heading_deg": 29.07
+      },
+      "output": {
+        "position_enu": [
+          0.0,
+          2.3344,
+          0.0853
+        ],
+        "navigation_mode": "OUTAGE_DEAD_RECKONING",
+        "is_outage": true,
+        "outage_duration_s": 0.947,
+        "detection_latency_ms": 0.1
+      }
+    }
+  ]
+}

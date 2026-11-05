@@ -25,3 +25,4 @@
    - `ReplaySource` stream publisher at 10 Hz with pause, resume, seek, and loop support.
    - `OfflineRegionStore` vector feature parser and spatial boundary validator.
    - `NavigationScreen` featuring the mandatory persistent **"Simulation — deterministic replay"** banner, high-contrast dynamic status chips ("GNSS Aided (Active)", "GNSS Outage (Dead Reckoning Mode)"), offline vector road renderer, vehicle heading chevron cursor, uncertainty circle, speed HUD, calibration sheet, and diagnostics sheet.
+

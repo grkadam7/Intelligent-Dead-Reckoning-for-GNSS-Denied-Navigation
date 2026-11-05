@@ -31,3 +31,4 @@ Requirements:
    - Foreground-only navigation guarantees. Inactive/background state explicitly transitions to `suspended` status.
    - Strict differentiation between raw dead-reckoning trajectory and road-matched coordinates.
    - Explicit uncertainty bounds derived from covariance ($2\sigma$ / 95% horizontal uncertainty ellipse/radius).
+

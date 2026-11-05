@@ -1,0 +1,44 @@
+{
+  "model_name": "speednet_v1_onnx",
+  "version": "1.0.0",
+  "format": "ONNX",
+  "opset_version": 11,
+  "architecture": "1D CNN + 2-layer GRU + Linear Head",
+  "input": {
+    "name": "imu_window",
+    "shape": [1, 6, 50],
+    "dtype": "float32",
+    "sampling_rate_hz": 10.0,
+    "window_duration_seconds": 5.0,
+    "channels": [
+      "accel_x_mps2",
+      "accel_y_mps2",
+      "accel_z_mps2",
+      "gyro_x_rads",
+      "gyro_y_rads",
+      "gyro_z_rads"
+    ]
+  },
+  "normalization": {
+    "type": "standard_z_score",
+    "mu": [0.0512, -0.0123, 9.8066, 0.0011, -0.0008, 0.0025],
+    "sigma": [1.4250, 0.8920, 1.1540, 0.1250, 0.1180, 0.2450]
+  },
+  "output": {
+    "name": "speed_ms",
+    "shape": [1, 1],
+    "dtype": "float32",
+    "unit": "m/s",
+    "min_value": 0.0,
+    "max_value": 45.0
+  },
+  "performance": {
+    "max_inference_latency_ms": 20.0,
+    "target_average_latency_ms": 5.2,
+    "memory_footprint_bytes": 184500
+  },
+  "license": {
+    "type": "MIT",
+    "attribution": "ISRO SIH Problem Statement 26168 Intelligent Dead Reckoning Project"
+  }
+}
