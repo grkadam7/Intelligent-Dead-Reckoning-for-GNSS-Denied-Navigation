@@ -96,3 +96,4 @@ Demonstrates continuous exponential decay offset ($\tau = 2.5$ s), eliminating j
 | **MOBILE-03**| In-app sensor calibration display | Calibration status sheet with roll/pitch angles | ✅ Met |
 | **EVAL-01**  | Automated evaluation across benchmark runs | Multi-scenario evaluation suite (`evaluate_phase8.py`) | ✅ Met |
 | **EVAL-02**  | 4-way trajectory comparison plots with error curves | Publication figure `sih_4way_trajectory_comparison.png` | ✅ Met |
+

@@ -31,3 +31,4 @@
 5. **Test Suite Verification (`tests/test_phase8.py`):**
    - Automated unit tests asserting figure existence, non-zero file sizes, JSON integrity, and $<10\%$ drift across all scenarios.
    - 21/21 passing tests across the entire repository.
+
