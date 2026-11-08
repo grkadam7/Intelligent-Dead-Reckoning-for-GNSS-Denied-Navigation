@@ -46,3 +46,14 @@ data/iovnbd/
 Thumbs.db
 .vscode/
 .idea/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+**/android/local.properties
+**/android/.gradle/
+**/build/
+**/GeneratedPluginRegistrant.java

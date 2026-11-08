@@ -1,0 +1,64 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'mobile/**'
+      - 'native/**'
+      - '.github/workflows/build_apk.yml'
+
+jobs:
+  build-apk:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Verify Flutter & Android Environment
+        run: flutter doctor -v
+
+      - name: Ensure Android Project Scaffold
+        working-directory: mobile
+        run: flutter create --platforms=android --org com.isro.sih .
+
+      - name: Install Dependencies
+        working-directory: mobile
+        run: flutter pub get
+
+      - name: Build Android Release APK
+        working-directory: mobile
+        run: flutter build apk --release
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: IDR-Navigation-Release-APK
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Write Job Summary
+        run: |
+          echo "### 🚀 Android Release APK Built Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The installable **IDR Navigation APK** is available for download under the **Artifacts** section of this workflow run." >> $GITHUB_STEP_SUMMARY
+          echo "- **Target:** Android (arm64-v8a, armeabi-v7a, x86_64)" >> $GITHUB_STEP_SUMMARY
+          echo "- **App Name:** IDR Navigation" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package:** com.isro.sih.idr_mobile" >> $GITHUB_STEP_SUMMARY
