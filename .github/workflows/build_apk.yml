@@ -27,8 +27,27 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Verify Flutter & Android Environment
-        run: flutter doctor -v
+      - name: Generate Clean Android Platform Project
+        working-directory: mobile
+        run: |
+          rm -rf android
+          flutter create --platforms=android --org com.isro.sih .
+          python3 -c "
+          manifest_path = 'android/app/src/main/AndroidManifest.xml'
+          with open(manifest_path, 'r') as f:
+              data = f.read()
+          permissions = '''
+              <uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />
+              <uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />
+              <uses-permission android:name=\"android.permission.HIGH_SAMPLING_RATE_SENSORS\" />
+              <uses-permission android:name=\"android.permission.WAKE_LOCK\" />
+              <uses-permission android:name=\"android.permission.FOREGROUND_SERVICE\" />
+          '''
+          data = data.replace('<application', permissions + '    <application')
+          with open(manifest_path, 'w') as f:
+              f.write(data)
+          print('Successfully injected navigation permissions into AndroidManifest.xml')
+          "
 
       - name: Install Dependencies
         working-directory: mobile
@@ -36,7 +55,7 @@ jobs:
 
       - name: Build Android Release APK
         working-directory: mobile
-        run: flutter build apk --release --android-skip-build-dependency-validation
+        run: flutter build apk --release
 
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
