@@ -5,10 +5,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'mobile/**'
-      - 'native/**'
-      - '.github/workflows/build_apk.yml'
 
 jobs:
   build-apk:
@@ -33,10 +29,6 @@ jobs:
 
       - name: Verify Flutter & Android Environment
         run: flutter doctor -v
-
-      - name: Ensure Android Project Scaffold
-        working-directory: mobile
-        run: flutter create --platforms=android --org com.isro.sih .
 
       - name: Install Dependencies
         working-directory: mobile
