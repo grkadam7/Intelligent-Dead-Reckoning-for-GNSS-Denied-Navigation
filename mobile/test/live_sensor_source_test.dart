@@ -27,7 +27,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 50));
 
       expect(snapshots.isNotEmpty, isTrue);
-      expect(source.currentMode, NavigationMode.gnssAided);
+      expect(source.currentMode, IdrNavMode.gnssAided);
       expect(snapshots.last.source, NavSource.live);
       expect(snapshots.last.simulated, isFalse);
 

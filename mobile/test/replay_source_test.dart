@@ -39,7 +39,7 @@ void main() {
 
       expect(snapshot.sequence, 42);
       expect(snapshot.source, NavSource.replay);
-      expect(snapshot.mode, NavigationMode.deadReckoning);
+      expect(snapshot.mode, IdrNavMode.deadReckoning);
       expect(snapshot.speedKmh, 50.4);
       expect(snapshot.headingDeg, 90.0);
       expect(snapshot.horizontalUncertaintyM, 3.2);
@@ -91,9 +91,9 @@ void main() {
 
       expect(received.length, greaterThanOrEqualTo(2));
       expect(received[0].sequence, 1);
-      expect(received[0].mode, NavigationMode.gnssAided);
+      expect(received[0].mode, IdrNavMode.gnssAided);
       expect(received[1].sequence, 2);
-      expect(received[1].mode, NavigationMode.deadReckoning);
+      expect(received[1].mode, IdrNavMode.deadReckoning);
     });
   });
 }

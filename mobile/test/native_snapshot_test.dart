@@ -32,7 +32,7 @@ void main() {
         speedValid: true,
         headingDeg: 90.0,
         headingValid: true,
-        mode: NavigationMode.gnssAided,
+        mode: IdrNavMode.gnssAided,
         modeReason: 'Live sensor fusion active',
         horizontalUncertaintyM: 1.5,
         uncertaintyValid: true,

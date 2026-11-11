@@ -1,7 +1,7 @@
 // Core typed navigation snapshot contract for IDR-INS.
 // Fulfills MOBILE-01, MOBILE-02, and MOBILE-03 state delivery.
 
-enum NavigationMode {
+enum IdrNavMode {
   initializing,
   gnssAided,
   deadReckoning,
@@ -50,7 +50,7 @@ class NavSnapshot {
   final bool headingValid;
 
   // State estimation & Health
-  final NavigationMode mode;
+  final IdrNavMode mode;
   final String modeReason;
   final double horizontalUncertaintyM; // 95% 2-sigma radius
   final bool uncertaintyValid;
@@ -98,22 +98,22 @@ class NavSnapshot {
   });
 
   factory NavSnapshot.fromJson(Map<String, dynamic> json) {
-    NavigationMode parseMode(String? m) {
+    IdrNavMode parseMode(String? m) {
       switch (m) {
         case 'gnss_aided':
-          return NavigationMode.gnssAided;
+          return IdrNavMode.gnssAided;
         case 'dead_reckoning':
-          return NavigationMode.deadReckoning;
+          return IdrNavMode.deadReckoning;
         case 'recovering':
-          return NavigationMode.recovering;
+          return IdrNavMode.recovering;
         case 'stale':
-          return NavigationMode.stale;
+          return IdrNavMode.stale;
         case 'suspended':
-          return NavigationMode.suspended;
+          return IdrNavMode.suspended;
         case 'failed':
-          return NavigationMode.failed;
+          return IdrNavMode.failed;
         default:
-          return NavigationMode.initializing;
+          return IdrNavMode.initializing;
       }
     }
 

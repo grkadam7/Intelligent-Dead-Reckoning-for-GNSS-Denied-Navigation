@@ -8,7 +8,7 @@ import 'nav_snapshot.dart';
 
 class ReplaySource {
   final List<NavSnapshot> _snapshots = [];
-  StreamController<NavSnapshot>? _controller;
+  final StreamController<NavSnapshot> _controller = StreamController<NavSnapshot>.broadcast();
   Timer? _timer;
   int _currentIndex = 0;
   bool _isPlaying = false;
@@ -19,7 +19,7 @@ class ReplaySource {
   bool get isPlaying => _isPlaying;
   int get currentIndex => _currentIndex;
   int get totalSnapshots => _snapshots.length;
-  Stream<NavSnapshot> get stream => _controller?.stream ?? const Stream.empty();
+  Stream<NavSnapshot> get stream => _controller.stream;
 
   /// Loads replay snapshots from a raw JSON string.
   void loadFromString(String jsonContent) {
@@ -45,7 +45,6 @@ class ReplaySource {
   void start() {
     if (_snapshots.isEmpty) return;
 
-    _controller ??= StreamController<NavSnapshot>.broadcast();
     _isPlaying = true;
     _timer?.cancel();
 
@@ -54,7 +53,7 @@ class ReplaySource {
 
       if (_currentIndex < _snapshots.length) {
         final current = _snapshots[_currentIndex];
-        _controller?.add(current);
+        _controller.add(current);
         _currentIndex++;
       } else {
         // Loop simulation
@@ -77,7 +76,7 @@ class ReplaySource {
     if (index >= 0 && index < _snapshots.length) {
       _currentIndex = index;
       if (_snapshots.isNotEmpty) {
-        _controller?.add(_snapshots[_currentIndex]);
+        _controller.add(_snapshots[_currentIndex]);
       }
     }
   }
@@ -91,8 +90,7 @@ class ReplaySource {
 
   void dispose() {
     stop();
-    _controller?.close();
-    _controller = null;
+    _controller.close();
   }
 }
 

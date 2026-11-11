@@ -1,6 +1,7 @@
 // Navigation Screen & Offline Vector Map Viewport for IDR-INS.
 // Fulfills MOBILE-01, MOBILE-02, and MOBILE-03 UI specifications.
 
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../navigation/nav_snapshot.dart';
@@ -102,50 +103,50 @@ class _NavigationScreenState extends State<NavigationScreen> {
     });
   }
 
-  Color _getModeColor(NavigationMode mode) {
+  Color _getModeColor(IdrNavMode mode) {
     switch (mode) {
-      case NavigationMode.gnssAided:
+      case IdrNavMode.gnssAided:
         return const Color(0xFF2E7D32); // High-contrast forest green
-      case NavigationMode.deadReckoning:
+      case IdrNavMode.deadReckoning:
         return const Color(0xFFE65100); // High-contrast amber/orange
-      case NavigationMode.recovering:
+      case IdrNavMode.recovering:
         return const Color(0xFF0277BD); // Light ocean blue
-      case NavigationMode.stale:
-      case NavigationMode.failed:
+      case IdrNavMode.stale:
+      case IdrNavMode.failed:
         return const Color(0xFFC62828); // Crimson red
       default:
         return const Color(0xFF455A64); // Slate grey
     }
   }
 
-  String _getModeLabel(NavigationMode mode) {
+  String _getModeLabel(IdrNavMode mode) {
     switch (mode) {
-      case NavigationMode.gnssAided:
+      case IdrNavMode.gnssAided:
         return "GNSS Aided (Active)";
-      case NavigationMode.deadReckoning:
+      case IdrNavMode.deadReckoning:
         return "GNSS Outage (Dead Reckoning Mode)";
-      case NavigationMode.recovering:
+      case IdrNavMode.recovering:
         return "Recovering GNSS (Smooth Reconvergence)";
-      case NavigationMode.stale:
+      case IdrNavMode.stale:
         return "Navigation Data Stale";
-      case NavigationMode.suspended:
+      case IdrNavMode.suspended:
         return "Navigation Suspended";
-      case NavigationMode.failed:
+      case IdrNavMode.failed:
         return "Navigation Stopped";
       default:
         return "Preparing Navigation...";
     }
   }
 
-  IconData _getModeIcon(NavigationMode mode) {
+  IconData _getModeIcon(IdrNavMode mode) {
     switch (mode) {
-      case NavigationMode.gnssAided:
+      case IdrNavMode.gnssAided:
         return Icons.satellite_alt_rounded;
-      case NavigationMode.deadReckoning:
+      case IdrNavMode.deadReckoning:
         return Icons.alt_route_rounded;
-      case NavigationMode.recovering:
+      case IdrNavMode.recovering:
         return Icons.sync_rounded;
-      case NavigationMode.stale:
+      case IdrNavMode.stale:
         return Icons.timer_outlined;
       default:
         return Icons.navigation_rounded;
@@ -273,7 +274,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   Widget build(BuildContext context) {
     final snap = _currentSnapshot;
-    final mode = snap?.mode ?? NavigationMode.initializing;
+    final mode = snap?.mode ?? IdrNavMode.initializing;
     final modeColor = _getModeColor(mode);
 
     return Scaffold(

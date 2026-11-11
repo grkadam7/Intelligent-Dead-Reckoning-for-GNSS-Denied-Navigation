@@ -182,7 +182,7 @@ class NativeNavigationSource {
           speedValid: true,
           headingDeg: out.headingDeg,
           headingValid: true,
-          mode: NavigationMode.values[out.mode.clamp(0, NavigationMode.values.length - 1)],
+          mode: IdrNavMode.values[out.mode.clamp(0, IdrNavMode.values.length - 1)],
           modeReason: out.mode == 2 ? 'GNSS outage active' : 'Live sensor fusion active',
           horizontalUncertaintyM: out.horizontalUncertaintyM,
           uncertaintyValid: true,

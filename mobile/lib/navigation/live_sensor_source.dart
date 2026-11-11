@@ -26,11 +26,10 @@ class LiveSensorSource {
   // Orientation Leveling (degrees)
   double _rollDeg = 0.0;
   double _pitchDeg = 0.0;
-  double _yawDeg = 0.0;
   CalibrationStage _calibrationStage = CalibrationStage.waitingStillness;
 
   // GNSS Health & Outage State
-  NavigationMode _mode = NavigationMode.initializing;
+  IdrNavMode _mode = IdrNavMode.initializing;
   String _modeReason = "Waiting for initial GNSS fix...";
   DateTime? _lastGnssFixTime;
   double _lastGnssLat = 0.0;
@@ -50,7 +49,7 @@ class LiveSensorSource {
 
   Stream<NavSnapshot> get stream => _controller.stream;
   bool get isRunning => _isRunning;
-  NavigationMode get currentMode => _mode;
+  IdrNavMode get currentMode => _mode;
 
   void start({Duration interval = const Duration(milliseconds: 100)}) {
     _isRunning = true;
@@ -116,15 +115,15 @@ class LiveSensorSource {
     final gpsEast = enu[0];
     final gpsNorth = enu[1];
 
-    if (_mode == NavigationMode.deadReckoning) {
+    if (_mode == IdrNavMode.deadReckoning) {
       // Transition from Outage to Reconvergence
       _reconvOffsetEast = _eastM - gpsEast;
       _reconvOffsetNorth = _northM - gpsNorth;
       _reconvStartTime = now;
-      _mode = NavigationMode.recovering;
+      _mode = IdrNavMode.recovering;
       _modeReason = "GNSS restored: Smooth reconvergence active";
-    } else if (_mode != NavigationMode.recovering) {
-      _mode = NavigationMode.gnssAided;
+    } else if (_mode != IdrNavMode.recovering) {
+      _mode = IdrNavMode.gnssAided;
       _modeReason = "GNSS fix nominal (Accuracy: ±${accuracy.toStringAsFixed(1)}m)";
       _eastM = gpsEast;
       _northM = gpsNorth;
@@ -147,14 +146,14 @@ class LiveSensorSource {
     final gyroNorm = math.sqrt(_gx * _gx + _gy * _gy + _gz * _gz);
     if ((normA - 9.80665).abs() < 0.2 && gyroNorm < 0.03) {
       _speedMps = 0.0;
-      if (_mode == NavigationMode.deadReckoning) {
+      if (_mode == IdrNavMode.deadReckoning) {
         _modeReason = "Vehicle stationary (ZUPT drift reset active)";
       }
       return;
     }
 
     // 3. Forward Speed & Heading Dead Reckoning during Outage
-    if (_mode == NavigationMode.deadReckoning) {
+    if (_mode == IdrNavMode.deadReckoning) {
       // Integrate yaw rate
       _headingDeg = (_headingDeg + _gz * dt * 180.0 / math.pi) % 360.0;
       if (_headingDeg < 0) _headingDeg += 360.0;
@@ -183,19 +182,19 @@ class LiveSensorSource {
     if (_lastGnssFixTime != null) {
       final elapsedSec = now.difference(_lastGnssFixTime!).inMicroseconds / 1000000.0;
       if (elapsedSec > 1.5 || _lastGnssAccuracy > 20.0) {
-        if (_mode != NavigationMode.deadReckoning) {
-          _mode = NavigationMode.deadReckoning;
+        if (_mode != IdrNavMode.deadReckoning) {
+          _mode = IdrNavMode.deadReckoning;
           _modeReason = "GNSS blackout detected (${elapsedSec.toStringAsFixed(1)}s without fix): Dead Reckoning Active";
         }
       }
     }
 
     // 2. Apply Smooth Reconvergence Decay
-    if (_mode == NavigationMode.recovering && _reconvStartTime != null) {
+    if (_mode == IdrNavMode.recovering && _reconvStartTime != null) {
       final tReconv = now.difference(_reconvStartTime!).inMicroseconds / 1000000.0;
       final decay = math.exp(-0.69315 / _reconvHalfLifeSec * tReconv);
       if (decay < 0.02) {
-        _mode = NavigationMode.gnssAided;
+        _mode = IdrNavMode.gnssAided;
         _modeReason = "GNSS fix nominal (Reconvergence complete)";
         _reconvOffsetEast = 0.0;
         _reconvOffsetNorth = 0.0;
@@ -245,7 +244,6 @@ class LiveSensorSource {
   // WGS84 Bowring Ellipsoid Math
   static const double _a = 6378137.0;
   static const double _f = 1.0 / 298.257223563;
-  static const double _b = _a * (1.0 - _f);
   static const double _e2 = 2.0 * _f - _f * _f;
 
   List<double> _geodeticToEnu(double lat, double lon, double alt) {
