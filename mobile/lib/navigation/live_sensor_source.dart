@@ -51,6 +51,10 @@ class LiveSensorSource {
   bool get isRunning => _isRunning;
   IdrNavMode get currentMode => _mode;
 
+  void setStatus(String reason) {
+    _modeReason = reason;
+  }
+
   void start({Duration interval = const Duration(milliseconds: 100)}) {
     _isRunning = true;
     _ticker?.cancel();

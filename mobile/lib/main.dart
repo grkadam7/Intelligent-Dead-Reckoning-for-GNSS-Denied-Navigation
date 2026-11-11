@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'navigation/replay_source.dart';
 import 'navigation/live_sensor_source.dart';
+import 'navigation/device_sensor_feed.dart';
 import 'map/offline_region_store.dart';
 import 'map/navigation_screen.dart';
 
@@ -23,11 +24,13 @@ void main() async {
   final regionStore = OfflineRegionStore();
   final replaySource = ReplaySource();
   final liveSensorSource = LiveSensorSource();
+  final sensorFeed = DeviceSensorFeed(liveSensorSource);
 
   runApp(IDRMobileApp(
     regionStore: regionStore,
     replaySource: replaySource,
     liveSensorSource: liveSensorSource,
+    sensorFeed: sensorFeed,
   ));
 }
 
@@ -35,12 +38,14 @@ class IDRMobileApp extends StatefulWidget {
   final OfflineRegionStore regionStore;
   final ReplaySource replaySource;
   final LiveSensorSource liveSensorSource;
+  final DeviceSensorFeed sensorFeed;
 
   const IDRMobileApp({
     Key? key,
     required this.regionStore,
     required this.replaySource,
     required this.liveSensorSource,
+    required this.sensorFeed,
   }) : super(key: key);
 
   @override
@@ -111,6 +116,7 @@ class _IDRMobileAppState extends State<IDRMobileApp> {
                   regionStore: widget.regionStore,
                   replaySource: widget.replaySource,
                   liveSensorSource: widget.liveSensorSource,
+                  sensorFeed: widget.sensorFeed,
                 ),
     );
   }
