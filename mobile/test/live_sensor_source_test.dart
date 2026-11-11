@@ -35,6 +35,21 @@ void main() {
       await sub.cancel();
     });
 
+    test('Does not emit a position before the first GNSS fix', () async {
+      final source = LiveSensorSource();
+      final snapshots = <NavSnapshot>[];
+
+      final sub = source.stream.listen(snapshots.add);
+      source.start(interval: const Duration(milliseconds: 10));
+
+      await Future.delayed(const Duration(milliseconds: 40));
+
+      expect(snapshots, isEmpty);
+
+      source.dispose();
+      await sub.cancel();
+    });
+
     test('Detects GNSS outage and switches to Dead Reckoning', () async {
       final source = LiveSensorSource();
       source.start(interval: const Duration(milliseconds: 10));

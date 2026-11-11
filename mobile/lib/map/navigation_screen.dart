@@ -47,6 +47,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
   void _connectSource({required bool useLive}) {
     _activeSubscription?.cancel();
     _isLiveMode = useLive;
+    _matchedHistory.clear();
+    _rawHistory.clear();
+    _currentSnapshot = null;
 
     if (useLive && widget.liveSensorSource != null) {
       widget.replaySource.pause();
@@ -283,6 +286,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final snap = _currentSnapshot;
     final mode = snap?.mode ?? IdrNavMode.initializing;
     final modeColor = _getModeColor(mode);
+    final outsideCoverage = snap != null &&
+        snap.source == NavSource.live &&
+        !widget.regionStore.isPointInCoverage(snap.longitude, snap.latitude);
 
     return Scaffold(
       backgroundColor: const Color(0xFF121417),
@@ -370,6 +376,27 @@ class _NavigationScreenState extends State<NavigationScreen> {
             Expanded(
               child: Stack(
                 children: [
+                  if (outsideCoverage)
+                    Positioned(
+                      top: 8,
+                      left: 12,
+                      right: 12,
+                      child: IgnorePointer(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xCC1B1E22),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFF546E7A)),
+                          ),
+                          child: const Text(
+                            "Outside packaged map region - showing live track only",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white70, fontSize: 11),
+                          ),
+                        ),
+                      ),
+                    ),
                   GestureDetector(
                     onPanUpdate: (details) {
                       setState(() {
@@ -567,8 +594,12 @@ class OfflineMapPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final bounds = regionStore.manifest?.bounds ?? [-1.52, 52.39, -1.49, 52.42];
 
-    final refLon = (bounds[0] + bounds[2]) / 2.0;
-    final refLat = (bounds[1] + bounds[3]) / 2.0;
+    final refLon = currentSnapshot?.source == NavSource.live
+        ? currentSnapshot!.longitude
+        : (bounds[0] + bounds[2]) / 2.0;
+    final refLat = currentSnapshot?.source == NavSource.live
+        ? currentSnapshot!.latitude
+        : (bounds[1] + bounds[3]) / 2.0;
 
     // Meters per degree conversion around latitude
     final latRad = refLat * math.pi / 180.0;

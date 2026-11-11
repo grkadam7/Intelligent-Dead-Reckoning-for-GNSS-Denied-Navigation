@@ -179,6 +179,9 @@ class LiveSensorSource {
 
   void _epochUpdate() {
     if (!_isRunning) return;
+    // No live position exists until the first GNSS fix; emitting earlier would
+    // place the vehicle at the packaged region's default origin.
+    if (_originLat == null) return;
     _sequence++;
     final now = DateTime.now();
 
