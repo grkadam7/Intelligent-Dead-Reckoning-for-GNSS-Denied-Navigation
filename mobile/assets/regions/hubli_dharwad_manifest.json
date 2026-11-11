@@ -1,0 +1,33 @@
+{
+  "package_id": "hubli_dharwad_osm_v1",
+  "title": "Hubli-Dharwad Road Network (OpenStreetMap)",
+  "version": "1.0.0",
+  "schema_version": "1.0",
+  "crs": "EPSG:4326",
+  "center": [
+    75.075,
+    15.39
+  ],
+  "bounds": [
+    74.95,
+    15.3,
+    75.2,
+    15.48
+  ],
+  "zoom_levels": {
+    "min_zoom": 12,
+    "max_zoom": 18,
+    "default_zoom": 15
+  },
+  "license": {
+    "type": "ODbL-1.0",
+    "attribution": "OpenStreetMap contributors"
+  },
+  "files": {
+    "road_network": {
+      "path": "hubli_dharwad.geojson",
+      "format": "geojson",
+      "size_bytes": 3596768
+    }
+  }
+}

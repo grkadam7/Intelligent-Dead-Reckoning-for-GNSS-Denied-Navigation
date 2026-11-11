@@ -24,5 +24,7 @@ flutter:
   assets:
     - assets/regions/manifest.json
     - assets/regions/urban_route.geojson
+    - assets/regions/hubli_dharwad_manifest.json
+    - assets/regions/hubli_dharwad.geojson
     - assets/replay/navigation.json
 

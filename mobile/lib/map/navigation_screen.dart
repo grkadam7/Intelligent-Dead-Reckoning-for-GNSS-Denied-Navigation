@@ -646,6 +646,13 @@ class OfflineMapPainter extends CustomPainter {
 
     for (final feature in regionStore.roadFeatures) {
       if (feature.coordinates.length < 2) continue;
+      final topLeft = geoToScreen(feature.minLon, feature.maxLat);
+      final bottomRight = geoToScreen(feature.maxLon, feature.minLat);
+      if (!Rect.fromPoints(topLeft, bottomRight)
+          .inflate(12 * zoomScale)
+          .overlaps(Offset.zero & size)) {
+        continue; // Off-screen (e.g. another packaged region): skip drawing.
+      }
       final path = Path();
       final p0 = geoToScreen(feature.coordinates[0][0], feature.coordinates[0][1]);
       path.moveTo(p0.dx, p0.dy);

@@ -2,6 +2,7 @@
 // Fulfills MOBILE-01 offline vector map requirement.
 
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/services.dart' show rootBundle;
 
 class RoadFeature {
@@ -9,13 +10,17 @@ class RoadFeature {
   final String name;
   final String highway;
   final List<List<double>> coordinates; // [[lon, lat], ...]
+  final double minLon, minLat, maxLon, maxLat;
 
-  const RoadFeature({
+  RoadFeature({
     required this.id,
     required this.name,
     required this.highway,
     required this.coordinates,
-  });
+  })  : minLon = coordinates.map((p) => p[0]).reduce(math.min),
+        minLat = coordinates.map((p) => p[1]).reduce(math.min),
+        maxLon = coordinates.map((p) => p[0]).reduce(math.max),
+        maxLat = coordinates.map((p) => p[1]).reduce(math.max);
 }
 
 class OfflineRegionManifest {
@@ -57,6 +62,7 @@ class OfflineRegionManifest {
 class OfflineRegionStore {
   OfflineRegionManifest? _manifest;
   final List<RoadFeature> _roadFeatures = [];
+  final List<List<double>> _coverageBounds = [];
   bool _isLoaded = false;
 
   bool get isLoaded => _isLoaded;
@@ -68,8 +74,17 @@ class OfflineRegionStore {
     required String geojsonContent,
   }) {
     _roadFeatures.clear();
+    _coverageBounds.clear();
+    _manifest = null;
+    _addRegion(manifestJson, geojsonContent);
+    _isLoaded = true;
+  }
+
+  void _addRegion(String manifestJson, String geojsonContent) {
     final manifestMap = json.decode(manifestJson) as Map<String, dynamic>;
-    _manifest = OfflineRegionManifest.fromJson(manifestMap);
+    final regionManifest = OfflineRegionManifest.fromJson(manifestMap);
+    _manifest ??= regionManifest;
+    _coverageBounds.add(regionManifest.bounds);
 
     final geo = json.decode(geojsonContent) as Map<String, dynamic>;
     final features = geo['features'] as List? ?? [];
@@ -100,23 +115,39 @@ class OfflineRegionStore {
         }
       }
     }
-
-    _isLoaded = true;
   }
 
   Future<void> loadAssets({
     String manifestAsset = 'assets/regions/manifest.json',
     String geojsonAsset = 'assets/regions/urban_route.geojson',
   }) async {
-    final manifestStr = await rootBundle.loadString(manifestAsset);
-    final geojsonStr = await rootBundle.loadString(geojsonAsset);
-    loadFromStrings(manifestJson: manifestStr, geojsonContent: geojsonStr);
+    _roadFeatures.clear();
+    _coverageBounds.clear();
+    _manifest = null;
+
+    final regions = [
+      (manifestAsset, geojsonAsset),
+      (
+        'assets/regions/hubli_dharwad_manifest.json',
+        'assets/regions/hubli_dharwad.geojson',
+      ),
+    ];
+    for (final (manifestPath, geojsonPath) in regions) {
+      _addRegion(
+        await rootBundle.loadString(manifestPath),
+        await rootBundle.loadString(geojsonPath),
+      );
+    }
+    _isLoaded = true;
   }
 
   bool isPointInCoverage(double lon, double lat) {
-    if (_manifest == null) return false;
-    final b = _manifest!.bounds;
-    return lon >= b[0] && lat >= b[1] && lon <= b[2] && lat <= b[3];
+    for (final b in _coverageBounds) {
+      if (lon >= b[0] && lat >= b[1] && lon <= b[2] && lat <= b[3]) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
