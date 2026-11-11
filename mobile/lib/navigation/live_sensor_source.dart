@@ -32,6 +32,7 @@ class LiveSensorSource {
   IdrNavMode _mode = IdrNavMode.initializing;
   String _modeReason = "Waiting for initial GNSS fix...";
   DateTime? _lastGnssFixTime;
+  DateTime? _simulatedOutageUntil;
   double _lastGnssLat = 0.0;
   double _lastGnssLon = 0.0;
   double _lastGnssAccuracy = 999.0;
@@ -55,6 +56,12 @@ class LiveSensorSource {
     _modeReason = reason;
   }
 
+  /// Ignores GNSS fixes for [duration], so dead reckoning can be tested
+  /// without driving through a real tunnel.
+  void simulateGnssOutage(Duration duration) {
+    _simulatedOutageUntil = DateTime.now().add(duration);
+  }
+
   void start({Duration interval = const Duration(milliseconds: 100)}) {
     _isRunning = true;
     _ticker?.cancel();
@@ -65,6 +72,7 @@ class LiveSensorSource {
     _isRunning = false;
     _ticker?.cancel();
     _ticker = null;
+    _simulatedOutageUntil = null;
   }
 
   void pushImuSample({
@@ -100,6 +108,9 @@ class LiveSensorSource {
     required double headingDeg,
   }) {
     final now = DateTime.now();
+    if (_simulatedOutageUntil != null && now.isBefore(_simulatedOutageUntil!)) {
+      return; // Forced outage: let the epoch update switch to dead reckoning.
+    }
     _lastGnssFixTime = now;
     _lastGnssLat = latitude;
     _lastGnssLon = longitude;
@@ -222,7 +233,7 @@ class LiveSensorSource {
       sequence: _sequence,
       source: NavSource.live,
       timestampMs: now.millisecondsSinceEpoch,
-      stateAgeMs: 15,
+      stateAgeMs: _lastGnssFixTime == null ? 0 : now.difference(_lastGnssFixTime!).inMilliseconds,
       latitude: dispLat,
       longitude: dispLon,
       altitudeM: dispAlt,

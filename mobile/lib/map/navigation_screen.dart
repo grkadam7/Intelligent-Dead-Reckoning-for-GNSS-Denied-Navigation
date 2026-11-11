@@ -258,9 +258,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                  // Seek replay or toggle simulated outage to test dead reckoning transition
+                  // Seek replay or force a live outage to test dead reckoning.
                   if (!_isLiveMode) {
                     widget.replaySource.seek(100); // Index 100 enters the 20s tunnel blackout!
+                  } else {
+                    widget.liveSensorSource?.simulateGnssOutage(const Duration(seconds: 20));
                   }
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -303,22 +305,30 @@ class _NavigationScreenState extends State<NavigationScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        _isLiveMode ? Icons.sensors_rounded : Icons.science_outlined,
-                        color: Colors.white,
-                        size: 14,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        _isLiveMode
-                            ? "Live Device Sensors & GPS (10 Hz)"
-                            : "Simulation — deterministic replay (10 Hz)",
-                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
-                      ),
-                    ],
+                  Flexible(
+                    child: Row(
+                      children: [
+                        Icon(
+                          _isLiveMode ? Icons.sensors_rounded : Icons.science_outlined,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            _isLiveMode
+                                ? "Live Device Sensors & GPS (10 Hz)"
+                                : "Simulation — deterministic replay (10 Hz)",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   InkWell(
                     onTap: () => _connectSource(useLive: !_isLiveMode),
                     child: Container(

@@ -50,6 +50,28 @@ void main() {
       await sub.cancel();
     });
 
+    test('Simulated outage enters dead reckoning despite GNSS fixes', () async {
+      final source = LiveSensorSource();
+      source.start(interval: const Duration(milliseconds: 10));
+
+      source.pushGnssFix(
+        latitude: 15.3647, longitude: 75.1240, altitude: 700.0,
+        accuracy: 3.0, speedMps: 10.0, headingDeg: 90.0,
+      );
+      source.simulateGnssOutage(const Duration(seconds: 2));
+      // These fixes must be ignored while the outage is active.
+      source.pushGnssFix(
+        latitude: 15.3648, longitude: 75.1241, altitude: 700.0,
+        accuracy: 3.0, speedMps: 10.0, headingDeg: 90.0,
+      );
+
+      await Future.delayed(const Duration(milliseconds: 1700));
+
+      expect(source.currentMode, IdrNavMode.deadReckoning);
+
+      source.dispose();
+    });
+
     test('Detects GNSS outage and switches to Dead Reckoning', () async {
       final source = LiveSensorSource();
       source.start(interval: const Duration(milliseconds: 10));
