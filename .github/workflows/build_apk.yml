@@ -49,6 +49,106 @@ jobs:
           print('Successfully injected navigation permissions into AndroidManifest.xml')
           "
 
+      - name: Install Pinned Android NDK and CMake
+        run: |
+          set -euo pipefail
+          SDKMANAGER=$(command -v sdkmanager || true)
+          if [ -z "$SDKMANAGER" ]; then
+            SDKMANAGER=$(find "${ANDROID_HOME:-$ANDROID_SDK_ROOT}" -name sdkmanager -type f 2>/dev/null | head -n 1)
+          fi
+          echo "Using sdkmanager: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" "ndk;27.2.12479018" "cmake;3.22.1"
+
+      - name: Configure Native C++ Build In Generated Android Project
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          candidates = [
+              Path('mobile/android/app/build.gradle.kts'),
+              Path('mobile/android/app/build.gradle'),
+          ]
+          path = next((p for p in candidates if p.exists()), None)
+          if path is None:
+              raise SystemExit('No Android app Gradle file found after flutter create')
+
+          s = path.read_text(encoding='utf-8')
+
+          ndk_pin = '27.2.12479018'
+          cmake_pin = '3.22.1'
+          is_kts = path.suffix == '.kts'
+
+          # Pin the NDK version (Flutter template sets it from flutter.ndkVersion).
+          ndk_line = f'ndkVersion = "{ndk_pin}"' if is_kts else f'ndkVersion "{ndk_pin}"'
+          template_ndk = 'ndkVersion = flutter.ndkVersion' if is_kts else 'ndkVersion flutter.ndkVersion'
+          if template_ndk in s:
+              s = s.replace(template_ndk, ndk_line, 1)
+          elif ndk_line not in s:
+              anchor = 'compileSdk = flutter.compileSdkVersion' if is_kts else 'compileSdkVersion flutter.compileSdkVersion'
+              if anchor not in s:
+                  raise SystemExit('Missing ndkVersion and compileSdk anchors in Gradle file')
+              s = s.replace(anchor, anchor + '\n    ' + ndk_line, 1)
+
+          # Wire native/CMakeLists.txt into the generated app.
+          if 'externalNativeBuild' not in s:
+              if is_kts:
+                  native_block = (
+                      '    externalNativeBuild {\n'
+                      '        cmake {\n'
+                      '            path = file("../../../native/CMakeLists.txt")\n'
+                      f'            version = "{cmake_pin}"\n'
+                      '        }\n'
+                      '    }\n'
+                  )
+                  config_anchor = '    compileOptions {'
+                  if config_anchor not in s:
+                      raise SystemExit('Missing compileOptions anchor in Gradle Kotlin DSL')
+                  s = s.replace(config_anchor, native_block + config_anchor, 1)
+                  abi_block = (
+                      '        ndk {\n'
+                      '            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")\n'
+                      '        }\n'
+                  )
+                  default_anchor = '    defaultConfig {\n'
+                  if default_anchor not in s:
+                      raise SystemExit('Missing defaultConfig anchor in Gradle Kotlin DSL')
+                  s = s.replace(default_anchor, default_anchor + abi_block, 1)
+              else:
+                  native_block = (
+                      '    externalNativeBuild {\n'
+                      '        cmake {\n'
+                      '            path "../../../native/CMakeLists.txt"\n'
+                      f'            version "{cmake_pin}"\n'
+                      '        }\n'
+                      '    }\n'
+                  )
+                  config_anchor = '    compileOptions {'
+                  if config_anchor not in s:
+                      raise SystemExit('Missing compileOptions anchor in Gradle file')
+                  s = s.replace(config_anchor, native_block + config_anchor, 1)
+                  abi_block = (
+                      '        ndk {\n'
+                      "            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64'\n"
+                      '        }\n'
+                  )
+                  default_anchor = '    defaultConfig {\n'
+                  if default_anchor not in s:
+                      raise SystemExit('Missing defaultConfig anchor in Gradle file')
+                  s = s.replace(default_anchor, default_anchor + abi_block, 1)
+
+          path.write_text(s, encoding='utf-8')
+          print(f'Configured native build in {path}')
+          PY
+
+      - name: Run Native ABI Host Tests
+        run: |
+          set -euo pipefail
+          cmake -S native -B build/native-ci -DBUILD_TESTING=ON
+          cmake --build build/native-ci
+          ctest --test-dir build/native-ci --output-on-failure
+
       - name: Install Dependencies
         working-directory: mobile
         run: flutter pub get
@@ -56,6 +156,18 @@ jobs:
       - name: Build Android Release APK
         working-directory: mobile
         run: flutter build apk --release
+
+      - name: Verify Native Library In APK
+        run: |
+          set -euo pipefail
+          APK=mobile/build/app/outputs/flutter-apk/app-release.apk
+          for abi in arm64-v8a armeabi-v7a x86_64; do
+            unzip -l "$APK" | grep -q "lib/$abi/libidr_mobile.so" || {
+              echo "Missing libidr_mobile.so for $abi"
+              exit 1
+            }
+            echo "Found libidr_mobile.so for $abi"
+          done
 
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4

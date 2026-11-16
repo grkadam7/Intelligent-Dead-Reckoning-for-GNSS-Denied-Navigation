@@ -115,9 +115,12 @@ class NativeNavigationSource {
   DartPushGNSS? _pushGnssFn;
   DartStep? _stepFn;
   DartReset? _resetFn;
+  DartGetAbiVersion? _getAbiVersionFn;
+  String _status = 'native engine not initialized';
 
   bool get isAvailable => _handle != null && _handle != ffi.nullptr;
   Stream<NavSnapshot> get stream => _controller.stream;
+  String get engineStatus => _status;
 
   NativeNavigationSource({String? libraryPath}) {
     _initialize(libraryPath);
@@ -137,6 +140,14 @@ class NativeNavigationSource {
         _dylib = ffi.DynamicLibrary.open('libidr_mobile.so');
       }
 
+      _getAbiVersionFn = _dylib!.lookupFunction<NativeGetAbiVersion, DartGetAbiVersion>(
+        'idr_mobile_get_abi_version',
+      );
+      final abiVersion = _getAbiVersionFn!();
+      if (abiVersion != 1) {
+        throw StateError('Unsupported native ABI version: $abiVersion');
+      }
+
       _createFn = _dylib!.lookupFunction<NativeCreate, DartCreate>('idr_mobile_create');
       _destroyFn = _dylib!.lookupFunction<NativeDestroy, DartDestroy>('idr_mobile_destroy');
       _pushImuFn = _dylib!.lookupFunction<NativePushIMU, DartPushIMU>('idr_mobile_push_imu');
@@ -145,10 +156,12 @@ class NativeNavigationSource {
       _resetFn = _dylib!.lookupFunction<NativeReset, DartReset>('idr_mobile_reset');
 
       _handle = _createFn!(10.0);
-    } catch (_) {
-      // Library not loaded in host unit test / pure Dart environment
+      _status = 'native engine active (ABI 1)';
+    } catch (e) {
+      // Library not loaded in host unit test / pure Dart environment.
       _dylib = null;
       _handle = null;
+      _status = 'native engine unavailable: ${e.toString()}';
     }
   }
 
@@ -197,6 +210,60 @@ class NativeNavigationSource {
       }
     } finally {
       calloc.free(outPtr);
+    }
+  }
+
+  void pushImu(
+    double timestampS,
+    double ax,
+    double ay,
+    double az,
+    double gx,
+    double gy,
+    double gz,
+  ) {
+    if (!isAvailable || _pushImuFn == null) return;
+    final sample = calloc<NativeIMUSample>();
+    try {
+      sample.ref
+        ..timestampS = timestampS
+        ..accelXMps2 = ax
+        ..accelYMps2 = ay
+        ..accelZMps2 = az
+        ..gyroXRadS = gx
+        ..gyroYRadS = gy
+        ..gyroZRadS = gz;
+      _pushImuFn!(_handle!, sample);
+    } finally {
+      calloc.free(sample);
+    }
+  }
+
+  void pushGnss(
+    double timestampS,
+    double latDeg,
+    double lonDeg,
+    double altM,
+    double speedMps,
+    double headingDeg,
+    double hAccM, {
+    bool isValid = true,
+  }) {
+    if (!isAvailable || _pushGnssFn == null) return;
+    final sample = calloc<NativeGNSSSample>();
+    try {
+      sample.ref
+        ..timestampS = timestampS
+        ..latitudeDeg = latDeg
+        ..longitudeDeg = lonDeg
+        ..altitudeM = altM
+        ..accuracyM = hAccM
+        ..speedMps = speedMps
+        ..headingDeg = headingDeg
+        ..isValid = isValid ? 1 : 0;
+      _pushGnssFn!(_handle!, sample);
+    } finally {
+      calloc.free(sample);
     }
   }
 
