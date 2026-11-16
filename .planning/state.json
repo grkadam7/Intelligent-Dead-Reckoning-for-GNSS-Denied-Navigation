@@ -1,0 +1,53 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": "v1.1",
+  "phases": [
+    {
+      "number": "1",
+      "name": "Dataset Pipeline & Baseline INS",
+      "status": "pending"
+    },
+    {
+      "number": "2",
+      "name": "In-Vehicle Alignment & Preprocessing",
+      "status": "pending"
+    },
+    {
+      "number": "3",
+      "name": "AI/ML Speed & Kinematic Estimation",
+      "status": "pending"
+    },
+    {
+      "number": "4",
+      "name": "NHC & Offline Map-Matching",
+      "status": "pending"
+    },
+    {
+      "number": "5",
+      "name": "GNSS+INS Fusion & Blackout Handler",
+      "status": "pending"
+    },
+    {
+      "number": "6",
+      "name": "Edge Core Engine",
+      "status": "pending"
+    },
+    {
+      "number": "7",
+      "name": "Mobile Navigation Application",
+      "status": "pending"
+    },
+    {
+      "number": "8",
+      "name": "SIH Benchmark Deliverables",
+      "status": "pending"
+    }
+  ],
+  "next": {
+    "command": "/gsd-discuss-phase",
+    "label": "Discuss the first phase",
+    "reason": "Project initialized — plan your first phase"
+  },
+  "updated_at": "2026-11-16T11:02:11.315Z"
+}

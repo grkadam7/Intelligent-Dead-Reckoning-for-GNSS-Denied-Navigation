@@ -140,7 +140,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Edge Core Engine | 1/1 | ✅ Complete | 2026-10-22 |
 | 7. Mobile Navigation Application | 2/2 | ✅ Complete | 2026-11-06 |
 | 8. SIH Benchmark Deliverables | 1/1 | ✅ Complete | 2026-11-06 |
-| 9. DR Correctness & Outage Validation | 0/? | ⬜ Pending | — |
+| 9. DR Correctness & Outage Validation | 0/1 | ⬜ Pending | — |
 | 10. Native Android Engine Integration | 0/? | ⬜ Pending | — |
 | 11. Live Map Matching & Local Map Download | 0/? | ⬜ Pending | — |
 | 12. Foreground Tracking & Drive Recording | 0/? | ⬜ Pending | — |
@@ -154,7 +154,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 1. A 20 s simulated outage entered at 50 km/h keeps reported speed within 10% of the pre-outage value; no zero-speed collapse from the ZUPT detector.
 2. Horizontal uncertainty grows monotonically during the outage and reduces only on valid GNSS fix/reconvergence.
 3. The Live mode state sequence GNSS Aided → Dead Reckoning → Recovering → GNSS Aided is observable, with fix age climbing through the outage.
-**Plans**: TBD
+**Plans**: 1 plan
+- [ ] 09-01: Bus-like outage keeps speed and position alive (deterministic trace → ZUPT gate → honest uncertainty).
 
 ### Phase 10: Native Android Engine Integration
 **Goal**: Run the existing C/C++ IDR core on the phone instead of relying only on the simplified Dart engine.  
