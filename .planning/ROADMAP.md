@@ -15,6 +15,14 @@ This roadmap takes the project from the raw problem statement and IO-VNBD datase
 - [x] **Phase 7: Mobile Navigation Application** - Develop a cross-platform mobile navigation client (10 Hz) featuring offline map rendering, smooth vehicle tracking cursor, and real-time navigation status indicators.
 - [x] **Phase 8: SIH Benchmark Deliverables** - Generate quantitative benchmark metrics, trajectory plots (Ground Truth vs Raw vs IDR), and proposal artifacts demonstrating $<10\%$ drift for SIH screening.
 
+### Milestone v1.1 — Mobile Navigation App Rebuild
+
+- [ ] **Phase 9: Dead Reckoning Correctness & Outage Validation** - Fix the constant-speed ZUPT collapse seen on the bus, make uncertainty growth honest, and prove the state sequence with a repeatable 20 s outage.
+- [ ] **Phase 10: Native Android Engine Integration** - Build `libidr_mobile.so` with NDK/CMake, wire the C ABI through FFI from live sensor streams, and keep a safe Dart fallback.
+- [ ] **Phase 11: Live Map Matching & Local Map Download** - Snap live trajectories to the bundled road graph and let the user approve/download an OSM region for their own area.
+- [ ] **Phase 12: Foreground Tracking & Drive Recording** - Keep 10 Hz position updates with screen off/app backgrounded, and export raw IMU/GNSS/snapshot traces.
+- [ ] **Phase 13: UI & Diagnostics Redesign** - Make HUD/diagnostics reflect real state, age, uncertainty, calibration and export actions.
+
 ---
 
 ## Phase Details
@@ -120,7 +128,7 @@ This roadmap takes the project from the raw problem statement and IO-VNBD datase
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -132,3 +140,58 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 6. Edge Core Engine | 1/1 | ✅ Complete | 2026-10-22 |
 | 7. Mobile Navigation Application | 2/2 | ✅ Complete | 2026-11-06 |
 | 8. SIH Benchmark Deliverables | 1/1 | ✅ Complete | 2026-11-06 |
+| 9. DR Correctness & Outage Validation | 0/? | ⬜ Pending | — |
+| 10. Native Android Engine Integration | 0/? | ⬜ Pending | — |
+| 11. Live Map Matching & Local Map Download | 0/? | ⬜ Pending | — |
+| 12. Foreground Tracking & Drive Recording | 0/? | ⬜ Pending | — |
+| 13. UI & Diagnostics Redesign | 0/? | ⬜ Pending | — |
+
+### Phase 9: Dead Reckoning Correctness & Outage Validation
+**Goal**: Make dead reckoning survive a real constant-speed outage instead of freezing at ~1 km/h; make the outage measurable and repeatable.  
+**Depends on**: Phase 7 (current mobile app)  
+**Requirements**: DR-01, DR-02, DR-03  
+**Success Criteria**:
+1. A 20 s simulated outage entered at 50 km/h keeps reported speed within 10% of the pre-outage value; no zero-speed collapse from the ZUPT detector.
+2. Horizontal uncertainty grows monotonically during the outage and reduces only on valid GNSS fix/reconvergence.
+3. The Live mode state sequence GNSS Aided → Dead Reckoning → Recovering → GNSS Aided is observable, with fix age climbing through the outage.
+**Plans**: TBD
+
+### Phase 10: Native Android Engine Integration
+**Goal**: Run the existing C/C++ IDR core on the phone instead of relying only on the simplified Dart engine.  
+**Depends on**: Phase 9, Phase 6  
+**Requirements**: NENG-01, NENG-02  
+**Success Criteria**:
+1. CI builds `libidr_mobile.so` from `native/` via NDK/CMake and packages it in the release APK.
+2. Live accelerometer/gyro/GNSS samples are pushed through the C ABI at sensor rate; NavSnapshots publish at 10 Hz.
+3. If the library cannot load, the app falls back to the Dart engine and shows that fact in diagnostics.
+**Plans**: TBD
+
+### Phase 11: Live Map Matching & Local Map Download
+**Goal**: Keep the live trajectory on real roads and remove the fixed-region limitation.  
+**Depends on**: Phase 10  
+**Requirements**: LMAP-01, LMAP-02  
+**Success Criteria**:
+1. Live positions snap to the bundled Hubli-Dharwad road graph; the matched road link is visible in diagnostics.
+2. With explicit consent, the app downloads and caches an OSM road region for the current area.
+3. A downloaded region becomes the active offline map without rebuilding or reinstalling the app.
+**Plans**: TBD
+
+### Phase 12: Foreground Tracking & Drive Recording
+**Goal**: Support real drives and capture data that can be analysed after the trip.  
+**Depends on**: Phase 10  
+**Requirements**: TRK-01, TRK-02  
+**Success Criteria**:
+1. A foreground service keeps 10 Hz tracking active with the screen off or app backgrounded, with a visible notification.
+2. The user can start/stop a drive recording and export a trace containing raw IMU, GNSS fixes and NavSnapshots.
+3. Exported traces can be loaded by the existing Python evaluation scripts.
+**Plans**: TBD
+
+### Phase 13: UI & Diagnostics Redesign
+**Goal**: Make the app tell the truth about its state and give testers useful controls.  
+**Depends on**: Phases 9–12  
+**Requirements**: UI-01, UI-02  
+**Success Criteria**:
+1. HUD shows honest mode, fix age, uncertainty, speed and calibration state; no hardcoded placeholders.
+2. Calibration status is earned from a stationary window and resets when the device moves.
+3. Diagnostics exposes the outage control, active engine, active map region, and trace export.
+**Plans**: TBD

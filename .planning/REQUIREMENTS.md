@@ -6,7 +6,7 @@
 
 ---
 
-## v1 Requirements
+## v1.0 Requirements (Completed)
 
 ### 1. In-Vehicle Alignment & Auto-Calibration (ALIGN)
 - [ ] **ALIGN-01**: The system must automatically determine the 3D attitude (roll, pitch) of the device relative to Earth's gravity vector using accelerometer measurements during static or quasi-static periods.
@@ -48,6 +48,31 @@
 
 ---
 
+## v1.1 Requirements (Current milestone: Mobile Navigation App Rebuild)
+
+Defined from the 2026-11-16 bus recording: GNSS-aided mode was healthy (~50 km/h, ±2.5 m), but at simulated tunnel entry speed collapsed 50 → 1 km/h and position froze. These requirements make the mobile client field-usable and testable.
+
+### Dead Reckoning Correctness (DR)
+- [ ] **DR-01**: At constant-speed GNSS-outage entry, reported speed stays within 10% of pre-outage speed and never drops to zero from the ZUPT detector alone.
+- [ ] **DR-02**: Horizontal uncertainty grows monotonically with time/distance since the last GNSS fix and is reduced only by a valid fix or reconvergence.
+- [ ] **DR-03**: A 20 s simulated outage in Live mode drives the observable sequence GNSS Aided → Dead Reckoning → Recovering → GNSS Aided, with fix age climbing during the outage.
+
+### Native Engine Integration (NENG)
+- [ ] **NENG-01**: The Android release APK compiles the `native/` C/C++ core into `libidr_mobile.so` via NDK/CMake and packages it as an FFI-loadable library.
+- [ ] **NENG-02**: Live IMU/GNSS samples are pushed through the native C ABI and surface as 10 Hz NavSnapshots, with a documented fallback when the library is unavailable.
+
+### Live Map Layer (LMAP)
+- [ ] **LMAP-01**: Dead-reckoned live positions are snapped to the bundled Hubli-Dharwad road graph and the matched road link is visible in diagnostics.
+- [ ] **LMAP-02**: With user consent, the app downloads an OSM road region for the current area, caches it offline, and uses it as the active map without an app rebuild.
+
+### Tracking & Drive Recording (TRK)
+- [ ] **TRK-01**: Live tracking and 10 Hz position updates continue while the screen is off or the app is backgrounded.
+- [ ] **TRK-02**: The user can record and export a drive trace containing raw IMU, GNSS fixes, and NavSnapshots for post-trip analysis.
+
+### UI & Diagnostics (UI)
+- [ ] **UI-01**: HUD and diagnostics show honest mode, fix age, uncertainty, speed, and calibration state, plus a trace export action.
+- [ ] **UI-02**: Calibration status is earned from an actual stationary window rather than set on every near-gravity IMU sample.
+
 ## v2 Requirements (Deferred)
 - **MULTI-01**: Multi-vehicle collaborative dead reckoning sharing map-matched road bias via V2X / local mesh.
 - **ELEV-01**: Multi-story parking deck level determination using integrated barometric pressure sensor fusion.
@@ -71,14 +96,20 @@
 | FILTER-01, FILTER-02 | Phase 2 | Completed |
 | SPEED-01, SPEED-02, SPEED-03 | Phase 3 | Completed |
 | MAP-01, MAP-02, MAP-03 | Phase 4 | Completed |
-| FUSION-01, FUSION-02, FUSION-03, FUSION-04 | Phase 5 | Pending |
-| EDGE-01, EDGE-02 | Phase 6 | Pending |
-| MOBILE-01, MOBILE-02, MOBILE-03 | Phase 7 | Pending |
+| FUSION-01, FUSION-02, FUSION-03, FUSION-04 | Phase 5 | Completed |
+| EDGE-01, EDGE-02 | Phase 6 | Completed |
+| MOBILE-01, MOBILE-02, MOBILE-03 | Phase 7 | Completed |
+| Phase 8 benchmark deliverables | Phase 8 | Completed |
+| DR-01, DR-02, DR-03 | Phase 9 | Pending |
+| NENG-01, NENG-02 | Phase 10 | Pending |
+| LMAP-01, LMAP-02 | Phase 11 | Pending |
+| TRK-01, TRK-02 | Phase 12 | Pending |
+| UI-01, UI-02 | Phase 13 | Pending |
 
 **Coverage:**
-- v1 requirements: 20 total
-- Mapped to phases: 20
-- Unmapped: 0
+- v1.0 requirements: 20 total, all mapped, all completed
+- v1.1 requirements: 11 total, 11 mapped to phases 9–13, 0 unmapped
+- Deferred to v2: 2
 
 ---
 *Requirements defined: 2026-09-10*
