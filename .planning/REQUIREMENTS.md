@@ -100,7 +100,7 @@ Defined from the 2026-11-16 bus recording: GNSS-aided mode was healthy (~50 km/h
 | EDGE-01, EDGE-02 | Phase 6 | Completed |
 | MOBILE-01, MOBILE-02, MOBILE-03 | Phase 7 | Completed |
 | Phase 8 benchmark deliverables | Phase 8 | Completed |
-| DR-01, DR-02, DR-03 | Phase 9 | Pending |
+| DR-01, DR-02, DR-03 | Phase 9 | Completed |
 | NENG-01, NENG-02 | Phase 10 | Pending |
 | LMAP-01, LMAP-02 | Phase 11 | Pending |
 | TRK-01, TRK-02 | Phase 12 | Pending |
