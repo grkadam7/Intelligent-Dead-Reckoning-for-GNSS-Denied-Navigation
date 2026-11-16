@@ -23,5 +23,11 @@ if (BUILD_TESTING)
     )
     target_link_libraries(test_abi PRIVATE idr_mobile)
     add_test(NAME abi_tests COMMAND test_abi)
+
+    add_executable(test_bus_outage
+        tests/test_bus_outage.cpp
+    )
+    target_link_libraries(test_bus_outage PRIVATE idr_mobile)
+    add_test(NAME bus_outage_tests COMMAND test_bus_outage)
 endif()
 

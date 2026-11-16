@@ -8,6 +8,7 @@ import '../navigation/nav_snapshot.dart';
 import '../navigation/replay_source.dart';
 import '../navigation/live_sensor_source.dart';
 import '../navigation/device_sensor_feed.dart';
+import '../navigation/native_source.dart';
 import 'offline_region_store.dart';
 
 class NavigationScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class NavigationScreen extends StatefulWidget {
   final OfflineRegionStore regionStore;
   final LiveSensorSource? liveSensorSource;
   final DeviceSensorFeed? sensorFeed;
+  final NativeNavigationSource? nativeSource;
 
   const NavigationScreen({
     Key? key,
@@ -22,6 +24,7 @@ class NavigationScreen extends StatefulWidget {
     required this.regionStore,
     this.liveSensorSource,
     this.sensorFeed,
+    this.nativeSource,
   }) : super(key: key);
 
   @override
@@ -36,6 +39,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Offset _mapOffset = Offset.zero;
   bool _followVehicle = true;
   bool _isLiveMode = false;
+  String _activeEngine = 'Replay';
   StreamSubscription<NavSnapshot>? _activeSubscription;
 
   @override
@@ -53,15 +57,25 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
     if (useLive && widget.liveSensorSource != null) {
       widget.replaySource.pause();
-      widget.liveSensorSource!.start();
-      _activeSubscription = widget.liveSensorSource!.stream.listen(_handleSnapshot);
+      final native = widget.nativeSource;
+      if (native != null && native.isAvailable) {
+        native.start(const Duration(milliseconds: 100));
+        _activeSubscription = native.stream.listen(_handleSnapshot);
+        _activeEngine = native.engineStatus;
+      } else {
+        widget.liveSensorSource!.start();
+        _activeSubscription = widget.liveSensorSource!.stream.listen(_handleSnapshot);
+        _activeEngine = 'Dart engine (fallback) - ${native?.engineStatus ?? 'native source not configured'}';
+      }
       final feed = widget.sensorFeed;
       if (feed != null) unawaited(feed.start());
     } else {
+      widget.nativeSource?.stop();
       widget.sensorFeed?.stop();
       widget.liveSensorSource?.stop();
       widget.replaySource.start();
       _activeSubscription = widget.replaySource.stream.listen(_handleSnapshot);
+      _activeEngine = 'Replay';
     }
     setState(() {});
   }
@@ -90,6 +104,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   void dispose() {
     _activeSubscription?.cancel();
+    widget.nativeSource?.stop();
     widget.sensorFeed?.stop();
     super.dispose();
   }
@@ -237,6 +252,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 ],
               ),
               const SizedBox(height: 16),
+              Text("Engine: $_activeEngine",
+                  style: const TextStyle(color: Colors.white70)),
               Text("Sequence: #${snap?.sequence ?? 0}  |  Source: ${snap?.source.name ?? 'unknown'}",
                   style: const TextStyle(color: Colors.white70)),
               Text("Epoch Age: ${snap?.stateAgeMs ?? 0} ms (Target: <100 ms)",

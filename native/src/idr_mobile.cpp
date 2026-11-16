@@ -11,6 +11,7 @@
 #include <vector>
 #include <mutex>
 #include <chrono>
+#include <algorithm>
 
 namespace {
 
@@ -46,12 +47,26 @@ struct EngineInstance {
 
     // Timing & Outage Tracking
     double last_timestamp_s{0.0};
+    double last_gnss_timestamp_s{0.0};
     double blackout_start_s{0.0};
+    double recovery_start_s{0.0};
     bool is_blackout{false};
 
     std::mutex mtx;
 
     EngineInstance(double rate_hz) : sampling_rate_hz(rate_hz) {}
+
+    void geodetic_to_enu(double lat, double lon, double alt,
+                         double& out_e, double& out_n, double& out_u) const {
+        double lat0_rad = lat0_deg * PI / 180.0;
+        double sin_lat = std::sin(lat0_rad);
+        double r_n = WGS84_A / std::sqrt(1.0 - WGS84_E2 * sin_lat * sin_lat);
+        double r_m = WGS84_A * (1.0 - WGS84_E2) /
+                     std::pow(1.0 - WGS84_E2 * sin_lat * sin_lat, 1.5);
+        out_e = (r_n + alt0_m) * std::cos(lat0_rad) * (lon - lon0_deg) * PI / 180.0;
+        out_n = (r_m + alt0_m) * (lat - lat0_deg) * PI / 180.0;
+        out_u = alt - alt0_m;
+    }
 
     void enu_to_geodetic(double e, double n, double u, double& out_lat, double& out_lon, double& out_alt) const {
         double lat0_rad = lat0_deg * PI / 180.0;
@@ -123,6 +138,16 @@ int32_t idr_mobile_push_imu(idr_mobile_handle_t handle, const IDRMobileIMUSample
     if (dt <= 0.0 || dt > 1.0) dt = 1.0 / inst->sampling_rate_hz;
     inst->last_timestamp_s = sample->timestamp_s;
 
+    // A real tunnel stops producing fixes; detect the blackout from stale GNSS
+    // instead of waiting for an explicit invalid sample.
+    if (!inst->is_blackout && inst->last_gnss_timestamp_s > 0.0 &&
+        sample->timestamp_s - inst->last_gnss_timestamp_s > 1.5) {
+        inst->is_blackout = true;
+        inst->blackout_start_s = inst->last_gnss_timestamp_s;
+        inst->current_mode = IDR_MODE_DEAD_RECKONING;
+        // Preserve the last GNSS speed; steady driving must not zero it.
+    }
+
     // Kinematic forward velocity propagation
     double fwd_accel = sample->accel_x_mps2;
     inst->speed_mps = std::max(0.0, inst->speed_mps + fwd_accel * dt);
@@ -137,7 +162,8 @@ int32_t idr_mobile_push_imu(idr_mobile_handle_t handle, const IDRMobileIMUSample
     inst->north_m += inst->speed_mps * std::cos(rad) * dt;
 
     if (inst->is_blackout) {
-        inst->horizontal_uncertainty_m += 0.05 * dt;
+        double growth = (0.3 + 0.08 * std::fabs(inst->speed_mps)) * dt;
+        inst->horizontal_uncertainty_m = std::min(500.0, inst->horizontal_uncertainty_m + growth);
     }
 
     return IDR_SUCCESS;
@@ -151,14 +177,37 @@ int32_t idr_mobile_push_gnss(idr_mobile_handle_t handle, const IDRMobileGNSSSamp
     std::lock_guard<std::mutex> lock(inst->mtx);
 
     if (sample->is_valid) {
+        if (inst->last_gnss_timestamp_s <= 0.0) {
+            // First fix establishes the local ENU origin.
+            inst->lat0_deg = sample->latitude_deg;
+            inst->lon0_deg = sample->longitude_deg;
+            inst->alt0_m = sample->altitude_m;
+            inst->east_m = 0.0;
+            inst->north_m = 0.0;
+            inst->up_m = 0.0;
+        } else {
+            // Snap the inertial estimate to the GNSS position; never let pure
+            // IMU integration drift while GNSS is healthy.
+            double e = 0.0, n = 0.0, u = 0.0;
+            inst->geodetic_to_enu(sample->latitude_deg, sample->longitude_deg,
+                                  sample->altitude_m, e, n, u);
+            inst->east_m = e;
+            inst->north_m = n;
+            inst->up_m = u;
+        }
+        inst->last_gnss_timestamp_s = sample->timestamp_s;
+
         if (inst->is_blackout) {
             inst->is_blackout = false;
             inst->current_mode = IDR_MODE_RECOVERING;
+            inst->recovery_start_s = sample->timestamp_s;
         } else {
             inst->current_mode = IDR_MODE_GNSS_AIDED;
         }
         inst->speed_mps = sample->speed_mps;
-        inst->heading_deg = sample->heading_deg;
+        if (sample->heading_deg >= 0.0) {
+            inst->heading_deg = sample->heading_deg;
+        }
         inst->horizontal_uncertainty_m = sample->accuracy_m;
     } else {
         if (!inst->is_blackout) {
@@ -179,6 +228,18 @@ int32_t idr_mobile_step(idr_mobile_handle_t handle, IDRMobileNavOutput* out_snap
     std::lock_guard<std::mutex> lock(inst->mtx);
 
     inst->sequence++;
+
+    if (inst->current_mode == IDR_MODE_RECOVERING &&
+        inst->last_timestamp_s - inst->recovery_start_s > 3.0) {
+        inst->current_mode = IDR_MODE_GNSS_AIDED;
+    }
+
+    int32_t age_ms = 0;
+    if (inst->last_gnss_timestamp_s > 0.0 &&
+        inst->last_timestamp_s >= inst->last_gnss_timestamp_s) {
+        age_ms = static_cast<int32_t>(
+            (inst->last_timestamp_s - inst->last_gnss_timestamp_s) * 1000.0);
+    }
 
     double lat, lon, alt;
     inst->enu_to_geodetic(inst->east_m, inst->north_m, inst->up_m, lat, lon, alt);
@@ -202,7 +263,7 @@ int32_t idr_mobile_step(idr_mobile_handle_t handle, IDRMobileNavOutput* out_snap
     out_snapshot->pitch_deg = inst->pitch_deg;
     out_snapshot->yaw_deg = inst->yaw_deg;
     out_snapshot->is_matched = 1;
-    out_snapshot->state_age_ms = 15;
+    out_snapshot->state_age_ms = age_ms;
 
     return IDR_SUCCESS;
 }
@@ -221,6 +282,8 @@ int32_t idr_mobile_reset(idr_mobile_handle_t handle) {
     inst->heading_deg = 90.0;
     inst->horizontal_uncertainty_m = 1.8;
     inst->is_blackout = false;
+    inst->last_timestamp_s = 0.0;
+    inst->last_gnss_timestamp_s = 0.0;
     inst->current_mode = IDR_MODE_INITIALIZING;
 
     return IDR_SUCCESS;
