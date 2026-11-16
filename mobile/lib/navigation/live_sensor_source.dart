@@ -6,6 +6,11 @@ import 'dart:math' as math;
 import 'nav_snapshot.dart';
 
 class LiveSensorSource {
+  LiveSensorSource({DateTime Function()? clock})
+      : _clock = clock ?? DateTime.now,
+        _lastImuTime = (clock ?? DateTime.now)();
+
+  final DateTime Function() _clock;
   final StreamController<NavSnapshot> _controller = StreamController<NavSnapshot>.broadcast();
   Timer? _ticker;
   bool _isRunning = false;
@@ -36,6 +41,9 @@ class LiveSensorSource {
   double _lastGnssLat = 0.0;
   double _lastGnssLon = 0.0;
   double _lastGnssAccuracy = 999.0;
+  double _lastGnssSpeedMps = 0.0;
+  // ZUPT is only trusted when GNSS reported a sustained stop before the outage.
+  int _stationaryFixCount = 0;
 
   // Reconvergence Filter Offset
   double _reconvOffsetEast = 0.0;
@@ -46,7 +54,7 @@ class LiveSensorSource {
   // Latest raw IMU measurements
   double _ax = 0.0, _ay = 0.0, _az = 9.80665;
   double _gx = 0.0, _gy = 0.0, _gz = 0.0;
-  DateTime _lastImuTime = DateTime.now();
+  DateTime _lastImuTime;
 
   Stream<NavSnapshot> get stream => _controller.stream;
   bool get isRunning => _isRunning;
@@ -59,13 +67,13 @@ class LiveSensorSource {
   /// Ignores GNSS fixes for [duration], so dead reckoning can be tested
   /// without driving through a real tunnel.
   void simulateGnssOutage(Duration duration) {
-    _simulatedOutageUntil = DateTime.now().add(duration);
+    _simulatedOutageUntil = _clock().add(duration);
   }
 
   void start({Duration interval = const Duration(milliseconds: 100)}) {
     _isRunning = true;
     _ticker?.cancel();
-    _ticker = Timer.periodic(interval, (_) => _epochUpdate());
+    _ticker = Timer.periodic(interval, (_) => tick());
   }
 
   void stop() {
@@ -83,7 +91,7 @@ class LiveSensorSource {
     required double gy,
     required double gz,
   }) {
-    final now = DateTime.now();
+    final now = _clock();
     final dt = now.difference(_lastImuTime).inMicroseconds / 1000000.0;
     _lastImuTime = now;
 
@@ -107,7 +115,7 @@ class LiveSensorSource {
     required double speedMps,
     required double headingDeg,
   }) {
-    final now = DateTime.now();
+    final now = _clock();
     if (_simulatedOutageUntil != null && now.isBefore(_simulatedOutageUntil!)) {
       return; // Forced outage: let the epoch update switch to dead reckoning.
     }
@@ -115,6 +123,8 @@ class LiveSensorSource {
     _lastGnssLat = latitude;
     _lastGnssLon = longitude;
     _lastGnssAccuracy = accuracy;
+    _lastGnssSpeedMps = speedMps;
+    _stationaryFixCount = speedMps <= 0.7 ? _stationaryFixCount + 1 : 0;
 
     // Initialize local ENU origin on first GPS fix
     if (_originLat == null) {
@@ -157,9 +167,13 @@ class LiveSensorSource {
       _calibrationStage = CalibrationStage.calibrated;
     }
 
-    // 2. Zero Velocity Update (ZUPT) Stop Detection
+    // 2. Zero Velocity Update (ZUPT) Stop Detection.
+    // Near-gravity + low gyro also describes a bus at steady speed, so require
+    // GNSS to have confirmed a sustained stop before trusting ZUPT.
     final gyroNorm = math.sqrt(_gx * _gx + _gy * _gy + _gz * _gz);
-    if ((normA - 9.80665).abs() < 0.2 && gyroNorm < 0.03) {
+    if (_stationaryFixCount >= 2 &&
+        (normA - 9.80665).abs() < 0.2 &&
+        gyroNorm < 0.03) {
       _speedMps = 0.0;
       if (_mode == IdrNavMode.deadReckoning) {
         _modeReason = "Vehicle stationary (ZUPT drift reset active)";
@@ -176,25 +190,30 @@ class LiveSensorSource {
       // Body-frame forward acceleration
       final pitchRad = _pitchDeg * math.pi / 180.0;
       final fwdAccel = _ax * math.cos(pitchRad) + _az * math.sin(pitchRad);
-      _speedMps = math.max(0.0, _speedMps + fwdAccel * dt);
+      final target = math.max(0.0, _speedMps + fwdAccel * dt);
+      _speedMps = math.min(70.0, _speedMps * 0.7 + target * 0.3);
 
       // Non-Holonomic Constraints: propagate position strictly along forward vector
       final headingRad = _headingDeg * math.pi / 180.0;
       _eastM += _speedMps * math.sin(headingRad) * dt;
       _northM += _speedMps * math.cos(headingRad) * dt;
 
-      // Covariance growth
-      _horizontalUncertaintyM += 0.05 * dt;
+      // Covariance growth: uncertainty must reflect time spent blind, scaled
+      // by how far the vehicle could have travelled without GNSS.
+      final growth = (0.3 + 0.08 * _speedMps.abs()) * dt;
+      _horizontalUncertaintyM = math.min(500.0, _horizontalUncertaintyM + growth);
     }
   }
 
-  void _epochUpdate() {
+  /// Publishes one navigation epoch. The timer calls this; tests can call it
+  /// directly with an injected clock to fast-forward deterministic traces.
+  void tick() {
     if (!_isRunning) return;
     // No live position exists until the first GNSS fix; emitting earlier would
     // place the vehicle at the packaged region's default origin.
     if (_originLat == null) return;
     _sequence++;
-    final now = DateTime.now();
+    final now = _clock();
 
     // 1. Check GNSS Health & Detect Outages
     if (_lastGnssFixTime != null) {
@@ -202,6 +221,9 @@ class LiveSensorSource {
       if (elapsedSec > 1.5 || _lastGnssAccuracy > 20.0) {
         if (_mode != IdrNavMode.deadReckoning) {
           _mode = IdrNavMode.deadReckoning;
+          // Carry the last GNSS speed into dead reckoning; never reset to zero
+          // just because the IMU looks like steady straight driving.
+          _speedMps = _lastGnssSpeedMps;
           _modeReason = "GNSS blackout detected (${elapsedSec.toStringAsFixed(1)}s without fix): Dead Reckoning Active";
         }
       }

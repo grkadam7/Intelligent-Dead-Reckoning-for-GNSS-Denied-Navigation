@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:idr_mobile/navigation/nav_snapshot.dart';
 import 'package:idr_mobile/navigation/live_sensor_source.dart';
+import 'fixtures/manual_clock.dart';
 
 void main() {
   group('LiveSensorSource Real-Time Navigation Tests', () {
@@ -70,6 +71,39 @@ void main() {
       expect(source.currentMode, IdrNavMode.deadReckoning);
 
       source.dispose();
+    });
+
+    test('ZUPT still zeroes speed for a confirmed stationary vehicle', () async {
+      final clock = ManualClock(DateTime(2026, 1, 1));
+      final source = LiveSensorSource(clock: clock.call);
+      final snapshots = <NavSnapshot>[];
+      final sub = source.stream.listen(snapshots.add);
+      source.start(interval: const Duration(hours: 1));
+
+      // GNSS confirms a stop across three consecutive fixes.
+      for (var i = 0; i < 3; i++) {
+        clock.advance(const Duration(seconds: 1));
+        source.pushGnssFix(
+          latitude: 15.3647, longitude: 75.1240, altitude: 700.0,
+          accuracy: 2.5, speedMps: 0.0, headingDeg: -1.0,
+        );
+      }
+      // Stationary IMU signature must now be allowed to zero speed.
+      for (var i = 0; i < 10; i++) {
+        clock.advance(const Duration(milliseconds: 100));
+        source.pushImuSample(
+          ax: 0.0, ay: 0.0, az: 9.80665,
+          gx: 0.0, gy: 0.0, gz: 0.0,
+        );
+        source.tick();
+      }
+      await Future<void>.delayed(Duration.zero);
+
+      expect(snapshots.isNotEmpty, isTrue);
+      expect(snapshots.last.speedMps, 0.0);
+
+      source.dispose();
+      await sub.cancel();
     });
 
     test('Detects GNSS outage and switches to Dead Reckoning', () async {
