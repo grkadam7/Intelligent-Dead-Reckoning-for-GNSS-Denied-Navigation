@@ -141,7 +141,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Mobile Navigation Application | 2/2 | ✅ Complete | 2026-11-06 |
 | 8. SIH Benchmark Deliverables | 1/1 | ✅ Complete | 2026-11-06 |
 | 9. DR Correctness & Outage Validation | 1/1 | ✅ Complete | 2026-11-16 |
-| 10. Native Android Engine Integration | 0/? | ⬜ Pending | — |
+| 10. Native Android Engine Integration | 0/2 | ⬜ Pending | — |
 | 11. Live Map Matching & Local Map Download | 0/? | ⬜ Pending | — |
 | 12. Foreground Tracking & Drive Recording | 0/? | ⬜ Pending | — |
 | 13. UI & Diagnostics Redesign | 0/? | ⬜ Pending | — |
@@ -165,7 +165,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 1. CI builds `libidr_mobile.so` from `native/` via NDK/CMake and packages it in the release APK.
 2. Live accelerometer/gyro/GNSS samples are pushed through the C ABI at sensor rate; NavSnapshots publish at 10 Hz.
 3. If the library cannot load, the app falls back to the Dart engine and shows that fact in diagnostics.
-**Plans**: TBD
+**Plans**: 2 plans
+- [ ] 10-01: Build, package and bind the native engine (NDK/CMake CI, ABI contract, FFI wrappers).
+- [ ] 10-02: Feed the native engine and keep the Dart fallback (DR parity, engine selection).
 
 ### Phase 11: Live Map Matching & Local Map Download
 **Goal**: Keep the live trajectory on real roads and remove the fixed-region limitation.  
